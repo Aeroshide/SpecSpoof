@@ -1,0 +1,14 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "com.aeroshide.specspoof.mixins",
+  "compatibilityLevel": "JAVA_8",
+  "mixins": [
+  ],
+  "client": [
+    "DebugHudMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

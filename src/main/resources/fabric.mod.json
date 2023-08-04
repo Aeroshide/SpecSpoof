@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "id": "specspoof",
+  "version": "${version}",
+  "name": "SpecSpoof",
+  "description": "Huge fraud",
+  "authors": ["Aeroshide"],
+  "contact": {
+    "repo": "https://github.com/Aeroshide/SpecSpoof"
+  },
+  "license": "Apache-2.0",
+  "icon": "assets/specspoof/icon.png",
+  "environment": "client",
+  "entrypoints": {
+    "client": [
+      "com.aeroshide.specspoof.SpecSpoofClient"
+    ]
+  },
+  "mixins": [
+    "specspoof.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=0.12.10",
+    "minecraft": ">=1.15.2"
+  }
+}
