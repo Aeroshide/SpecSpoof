@@ -3,19 +3,18 @@ package com.aeroshide.specspoof.mixins;
 import com.aeroshide.specspoof.SpecSpoofClient;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.gui.hud.DebugHud;
+import net.minecraft.util.Formatting;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.util.List;
 
 @Mixin(value = DebugHud.class, priority = 999)
 public class DebugHudMixin {
-
-    @Unique
-    SpecSpoofClient main = new SpecSpoofClient();
 
     @Inject(method = "getRightText", at = @At("RETURN"))
     private void getRightText(CallbackInfoReturnable<List<String>> info) {
@@ -39,8 +38,13 @@ public class DebugHudMixin {
             rightText.set(gpuIndex, SpecSpoofClient.daGPUName);
         }
 
+        if (SpecSpoofClient.configIssues)
+        {
+            rightText.add(Formatting.RED + "[SpecSpoof] Your config has issues, using hardcoded settings");
+        }
+
         // so i dont override areesggee
-        if (!main.daMods.isEmpty())
+        if (!SpecSpoofClient.checkFor().isEmpty())
         {
             rightText.add("");
             rightText.add("CHEATING! v" + FabricLoader.getInstance().getModContainer("areessgee").get().getMetadata().getVersion().getFriendlyString());
