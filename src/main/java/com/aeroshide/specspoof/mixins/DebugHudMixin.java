@@ -19,6 +19,8 @@ public class DebugHudMixin {
     @Inject(method = "getRightText", at = @At("RETURN"))
     private void getRightText(CallbackInfoReturnable<List<String>> info) {
         List<String> rightText = info.getReturnValue();
+        /*
+
 
         int cpuIndex = -1;
         int gpuIndex = -1;
@@ -37,6 +39,8 @@ public class DebugHudMixin {
         if (gpuIndex != -1) {
             rightText.set(gpuIndex, SpecSpoofClient.daGPUName);
         }
+        /**
+         */
 
         if (SpecSpoofClient.configIssues)
         {
