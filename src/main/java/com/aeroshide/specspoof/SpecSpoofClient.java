@@ -9,10 +9,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.List;
-
-import static java.awt.GraphicsEnvironment.getLocalGraphicsEnvironment;
 
 public class SpecSpoofClient implements ClientModInitializer {
     /**
@@ -30,39 +26,47 @@ public class SpecSpoofClient implements ClientModInitializer {
 
     @Override
     public void onInitializeClient() {
-        // Create the default configuration file if it doesn't exist
+        loadConfig();
+    }
+
+    public static void loadConfig()
+    {
         if (!config.exists()) {
-            try (Writer writer = new FileWriter(config)) {
-                ConfigData data = new ConfigData(daCPUName, daGPUName, daFPS, disableFPSThreshold);
-                Gson gson = new GsonBuilder().setPrettyPrinting().create();
-                gson.toJson(data, writer);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            initConfig();
         }
         // Read data from the configuration file
         try (Reader reader = new FileReader(config)) {
             Gson gson = new Gson();
             ConfigData data = gson.fromJson(reader, ConfigData.class);
-            if (!validateJson(data)) {
-                configIssues = true;
-                return;
-            }
+            configIssues = validateJson(data);
+            if (!configIssues) return;
 
             daCPUName = data.getCPU();
             daGPUName = data.getGPU();
             daFPS = data.getFPS();
             disableFPSThreshold = data.getDisableFPSThreshold();
+            LOG.info("Config Loaded!");
         } catch (IOException e) {
             LOG.error(e);
         } catch (JsonSyntaxException e) {
             LOG.error("Invalid data in configuration file: " + e.getMessage());
             configIssues = true;
         }
-
     }
 
-    private boolean validateJson(ConfigData data) {
+    public static void initConfig()
+    {
+        try (Writer writer = new FileWriter(config)) {
+            ConfigData data = new ConfigData(daCPUName, daGPUName, daFPS, disableFPSThreshold);
+            Gson gson = new GsonBuilder().setPrettyPrinting().create();
+            gson.toJson(data, writer);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    public static boolean validateJson(ConfigData data) {
         // if this fires, you're either challenging me, or actually really stupid
         if (data == null)
         {
@@ -80,33 +84,22 @@ public class SpecSpoofClient implements ClientModInitializer {
         if (data.getCPU() == null || data.getCPU().isEmpty()) return false;
         else if (data.getGPU() == null || data.getGPU().isEmpty()) return false;
         else if (data.getFPS() <= 0 || data.getFPS() >= 999999) return false;
-        else if (data.getDisableFPSThreshold() <= 0 || data.getDisableFPSThreshold() >= 999999) return false;
-
-        return true;
+        else return data.getDisableFPSThreshold() >= 0 && data.getDisableFPSThreshold() < 999999;
     }
 
 
-    public static List<IncompatibleMods> checkFor() {
-        List<IncompatibleMods> result = new ArrayList<>();
-        if (FabricLoader.getInstance().isModLoaded("areessgee")) {
-            result.add(IncompatibleMods.AreEssGee);
-        }
-        return result;
-    }
+
 
 }
 
 // list may get bigger, and I will make more workarounds
-enum IncompatibleMods {
-    AreEssGee
-}
 
 // comments in case i forgot in the future lmao
 class ConfigData {
-    private String CPU; // the CPU name
-    private String GPU; // the GPU name
-    private int FPS; // desired FPS to be faked as
-    private int disableFPSThreshold; // The FPS Threshold for the fake fps to be deactivated, you see, to make it more believable, if your frames are dipping, the fps should actually reflect to that. imagine saying you have 1000 fps but your game runs like a slideshow, that just wouldn't work. (set to 0 if you dont want this feature)
+    private final String CPU; // the CPU name
+    private final String GPU; // the GPU name
+    private final int FPS; // desired FPS to be faked as
+    private final int disableFPSThreshold; // The FPS Threshold for the fake fps to be deactivated, you see, to make it more believable, if your frames are dipping, the fps should actually reflect to that. imagine saying you have 1000 fps but your game runs like a slideshow, that just wouldn't work. (set to 0 if you dont want this feature)
 
     public ConfigData(String CPU, String GPU, int FPS, int disableFPSThreshold) {
         this.CPU = CPU;
