@@ -6,7 +6,8 @@
   "description": "Modify your hardware specifications string in the F3 Menu!",
   "authors": ["Aeroshide"],
   "contact": {
-    "sources": "https://github.com/Aeroshide/SpecSpoof"
+    "sources": "https://github.com/Aeroshide/SpecSpoof",
+    "homepage": "https://github.com/Aeroshide/SpecSpoof"
   },
   "license": "Apache-2.0",
   "icon": "assets/specspoof/icon.png",

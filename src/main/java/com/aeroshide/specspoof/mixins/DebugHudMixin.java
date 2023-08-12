@@ -15,12 +15,12 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import java.util.ArrayList;
 import java.util.List;
 
-@Mixin(value = DebugHud.class, priority = 999)
+// this priority shit fuck you
+@Mixin(value = DebugHud.class, priority = 1001)
 public class DebugHudMixin {
-    @Redirect(method = "getRightText", at = @At(value = "INVOKE", target = "Lcom/google/common/collect/Lists;newArrayList([Ljava/lang/Object;)Ljava/util/ArrayList;", remap = false))
-    private ArrayList<String> redirectRightTextEarly(Object[] elements) {
-        ArrayList<String> strings = Lists.newArrayList((String[]) elements);
-        if (!SpecSpoofClient.configIssues) strings.add(Formatting.RED + "[SpecSpoof] Your config has issues, using hardcoded settings");
-        return strings;
+    @Inject(method = "getRightText", at = @At("RETURN"))
+    private void getRightText(CallbackInfoReturnable<List<String>> info) {
+        List<String> rightText = info.getReturnValue();
+        if (!SpecSpoofClient.configIssues) rightText.add(Formatting.RED + "[SpecSpoof] Your config has issues, using hardcoded settings");
     }
 }
