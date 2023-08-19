@@ -1,0 +1,12 @@
+{
+  "specspoof.configScreen": "Setelan SpecSpoof",
+  "specspoof.cpu": "Nama CPU",
+  "specspoof.gpu": "Nama GPU",
+  "specspoof.fps": "Target FPS Palsu",
+  "specspoof.fpsThres": "Matikan FPS Palsu di: %d",
+  "specspoof.save": "Simpan Perubahan",
+  "specspoof.openCfg": "Buka File JSON",
+  "specspoof.discard": "Abaikan",
+  "specspoof.fraud": "Selalu Bohong",
+  "specspoof.honest": "Selalu Jujur"
+}

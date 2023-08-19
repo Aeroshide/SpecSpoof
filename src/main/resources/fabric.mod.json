@@ -3,6 +3,9 @@
   "id": "specspoof",
   "version": "${version}",
   "name": "SpecSpoof",
+  "conflicts": {
+    "MoarFPS": "*"
+  },
   "description": "Modify your hardware specifications string in the F3 Menu!",
   "authors": ["Aeroshide"],
   "contact": {
@@ -15,6 +18,9 @@
   "entrypoints": {
     "client": [
       "com.aeroshide.specspoof.SpecSpoofClient"
+    ],
+    "modmenu": [
+      "com.aeroshide.specspoof.config.ModMenuImpl"
     ]
   },
   "mixins": [

@@ -1,6 +1,7 @@
 package com.aeroshide.specspoof.mixins;
 
 import com.aeroshide.specspoof.SpecSpoofClient;
+import com.aeroshide.specspoof.config.Config;
 import net.minecraft.client.MinecraftClient;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -15,6 +16,7 @@ import java.util.concurrent.CompletableFuture;
 public class MinecraftClientMixin {
     @Shadow
     private int fpsCounter;
+
 
 
 
@@ -33,6 +35,6 @@ public class MinecraftClientMixin {
     private void reloadConfig(CallbackInfoReturnable<CompletableFuture<Void>> cir)
     {
         SpecSpoofClient.LOG.info("Reloading Config!");
-        SpecSpoofClient.loadConfig();
+        SpecSpoofClient.fetchConfig();
     }
 }

@@ -1,0 +1,12 @@
+{
+  "specspoof.configScreen": "SpecSpoof Options",
+  "specspoof.cpu": "CPU Name",
+  "specspoof.gpu": "GPU Name",
+  "specspoof.fps": "Target FPS to Fraud",
+  "specspoof.fpsThres": "Disable Fraud FPS At: %d",
+  "specspoof.save": "Save Changes",
+  "specspoof.openCfg": "Open JSON File",
+  "specspoof.discard": "Discard",
+  "specspoof.fraud": "Always Fraud",
+  "specspoof.honest": "Always Honest"
+}
