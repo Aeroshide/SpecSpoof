@@ -31,11 +31,12 @@ public class SpecSpoofClient implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
         fetchConfig();
-
     }
 
     public static void fetchConfig() {
-        if (config.getOption("GPU") == null || config.getOption("CPU") == null || config.getOption("FPS") == null || config.getOption("FPS") == null || (int) config.getOption("FPS") <= 0 || (int) config.getOption("FPS") >= 999999 || (int) config.getOption("disableFPSThreshold") <= 0 || (int) config.getOption("disableFPSThreshold") >= 999999) {
+        config.loadConfig();
+
+        if (config.getOption("GPU") == null || config.getOption("CPU") == null || config.getOption("FPS") == null || config.getOption("FPS") == null || (int) config.getOption("FPS") <= 0 || (int) config.getOption("FPS") > 999999 || (int) config.getOption("disableFPSThreshold") <= 0 || (int) config.getOption("disableFPSThreshold") > 999999 || !configIssues) {
             configIssues = false;
 
             if (!config.doesExists()) {
@@ -43,7 +44,7 @@ public class SpecSpoofClient implements ClientModInitializer {
                 LOG.error("Config file missing somehow, creating another");
             }
             else {
-                LOG.error("Could not load config due to invalid data");
+                LOG.error("Could not fetch config due to invalid data");
             }
         } else {
             configIssues = true;
@@ -51,7 +52,6 @@ public class SpecSpoofClient implements ClientModInitializer {
             daGPUName = (String) config.getOption("GPU");
             daFPS = (int) config.getOption("FPS");
             disableFPSThreshold = (int) config.getOption("disableFPSThreshold");
-            LOG.info("Loaded config!");
         }
     }
 

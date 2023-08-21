@@ -10,10 +10,6 @@ public class IntFieldWidget extends TextFieldWidget {
     }
 
     public void write(String text) {
-        writeSynchronized(text);
-    }
-
-    private synchronized void writeSynchronized(String text) {
         String oldText = this.getText();
         super.write(text);
         String newText = this.getText();
@@ -31,14 +27,19 @@ public class IntFieldWidget extends TextFieldWidget {
         this.setText(newText);
     }
 
-    public int getInt() {
-        if (this.getText() == null)
-            return 0;
-        synchronized(this) {
-            return Integer.parseInt(this.getText());
-        }
 
+    public int getInt() {
+        String text = this.getText();
+        if (text == null || text.isEmpty()) {
+            return 0;
+        }
+        try {
+            return Integer.parseInt(text);
+        } catch (NumberFormatException e) {
+            return 0;
+        }
     }
+
 
 }
 

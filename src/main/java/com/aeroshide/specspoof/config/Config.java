@@ -57,13 +57,11 @@ public class Config {
 
     public boolean doesExists()
     {
-        if (!config.exists()) {
-            return false;
-        }
-        return true;
+        return config.exists();
     }
 
-    private void loadConfig() {
+
+    public void loadConfig() {
         if (!config.exists()) {
             initConfig();
         }
@@ -87,8 +85,10 @@ public class Config {
             Type type = new TypeToken<HashMap<String, Object>>(){}.getType();
             data = gson.fromJson(reader, type);
             LOG.info("Config Loaded!");
+            SpecSpoofClient.configIssues = true;
         } catch (IOException | JsonSyntaxException e) {
             LOG.error("Invalid data in configuration file: " + e.getMessage());
+            SpecSpoofClient.configIssues = false;
         }
     }
 
@@ -99,6 +99,7 @@ public class Config {
         data.put("GPU", SpecSpoofClient.daGPUName);
         data.put("FPS", SpecSpoofClient.daFPS);
         data.put("disableFPSThreshold", SpecSpoofClient.disableFPSThreshold);
+        SpecSpoofClient.configIssues = false;
         saveConfig();
     }
 

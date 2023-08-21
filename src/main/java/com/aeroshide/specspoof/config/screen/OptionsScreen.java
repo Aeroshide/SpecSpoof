@@ -1,6 +1,7 @@
-package com.aeroshide.specspoof.config;
+package com.aeroshide.specspoof.config.screen;
 
 import com.aeroshide.specspoof.SpecSpoofClient;
+import com.aeroshide.specspoof.config.IntFieldWidget;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;
@@ -35,6 +36,11 @@ public class OptionsScreen extends Screen {
     @Override
     public void init()
     {
+        if (!SpecSpoofClient.configIssues)
+        {
+            SpecSpoofClient.LOG.error("bad config file");
+            client.setScreen(new OptionsErrorScreen(this.parent));
+        }
 
         this.cpuNameField = new TextFieldWidget(this.textRenderer, this.width / 2 - 100, 44, 200, 20, Text.translatable("specspoof.cpu"));
         this.cpuNameField.setMaxLength(64);
@@ -134,28 +140,15 @@ public class OptionsScreen extends Screen {
     public boolean shouldButtonBeActive() {
         boolean shouldActivate = false;
 
-        if (this.fpsValueField.getText() != null && fpsValueField.getInt() != SpecSpoofClient.daFPS) {
-            SpecSpoofClient.LOG.info("FPS value field has changed. New value: '{}', Old value: '{}'", this.fpsValueField.getInt(), SpecSpoofClient.daFPS);
+        if (fpsValueField.getInt() != SpecSpoofClient.daFPS || tempDFPST != SpecSpoofClient.disableFPSThreshold || !this.gpuNameField.getText().trim().equals(SpecSpoofClient.daGPUName.trim()) || !this.cpuNameField.getText().trim().equals(SpecSpoofClient.daCPUName.trim())) {
+            SpecSpoofClient.LOG.info("a field has changed, allowing changes on this line");
             shouldActivate = true;
         }
 
-        if (this.gpuNameField.getText() != null && !this.gpuNameField.getText().trim().equals(SpecSpoofClient.daGPUName.trim())) {
-            SpecSpoofClient.LOG.info("GPU name field has changed. New value: '{}', Old value: '{}'", this.gpuNameField.getText(), SpecSpoofClient.daGPUName);
-            shouldActivate = true;
-        }
-
-        if (this.cpuNameField.getText() != null && !this.cpuNameField.getText().trim().equals(SpecSpoofClient.daCPUName.trim())) {
-            SpecSpoofClient.LOG.info("CPU name field has changed. New value: '{}', Old value: '{}'", this.cpuNameField.getText(), SpecSpoofClient.daCPUName);
-            shouldActivate = true;
-        }
-
-        if (tempDFPST != SpecSpoofClient.disableFPSThreshold) {
-            SpecSpoofClient.LOG.info("disableFPSThreshold has changed. New value: '{}', Old value: '{}'", tempDFPST, SpecSpoofClient.disableFPSThreshold);
-            shouldActivate = true;
-        }
-
-        if (!shouldActivate) {
-            SpecSpoofClient.LOG.info("No changes detected.");
+        if (this.fpsValueField.getText().isEmpty() || this.gpuNameField.getText().isEmpty() || this.cpuNameField.getText().isEmpty())
+        {
+            SpecSpoofClient.LOG.info("Not allowing changes because of empty fields");
+            shouldActivate = false;
         }
 
         return shouldActivate;

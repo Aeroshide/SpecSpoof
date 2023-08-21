@@ -8,5 +8,7 @@
   "specspoof.openCfg": "Open JSON File",
   "specspoof.discard": "Discard",
   "specspoof.fraud": "Always Fraud",
-  "specspoof.honest": "Always Honest"
+  "specspoof.configissues": "Your config file has issues",
+  "specspoof.resetOptions": "Reset Config",
+  "specspoof.issueMessage": "It seems like your SpecSpoof config file has some problems. This could be due to incorrect settings, missing values, or unsupported options.\n\nPlease check your configuration file and make sure all settings are correct. If you’re unsure about any of the options, you can refer to the mod documentation on the modrinth page!\n\nIf you continue to experience issues, you can choose to reset your configuration file to its default settings. Please note that this will erase any custom settings you’ve made."
 }
