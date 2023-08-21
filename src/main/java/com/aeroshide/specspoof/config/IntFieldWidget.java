@@ -32,6 +32,8 @@ public class IntFieldWidget extends TextFieldWidget {
     }
 
     public int getInt() {
+        if (this.getText() == null)
+            return 0;
         synchronized(this) {
             return Integer.parseInt(this.getText());
         }

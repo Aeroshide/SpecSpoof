@@ -67,7 +67,7 @@ public class OptionsScreen extends Screen {
             }
 
             protected void applyValue() {
-                if (value >= 260)
+                if ((value * (260.0 - 1.0) + 1.0) >= 260)
                 {
                     tempDFPST = 999999;
                 }
@@ -90,6 +90,7 @@ public class OptionsScreen extends Screen {
 
         this.acceptButton = this.addDrawableChild(ButtonWidget.builder(Text.translatable("specspoof.save"), (button) -> {
             writeConfig();
+            SpecSpoofClient.fetchConfig();
             client.setScreen(this.parent);
         }).dimensions(this.width / 2 - 100 + (this.cfgButton.getX()), this.height / 4 + 120 + 28, 100, 20).build());
 
@@ -134,7 +135,7 @@ public class OptionsScreen extends Screen {
         boolean shouldActivate = false;
 
         if (this.fpsValueField.getText() != null && fpsValueField.getInt() != SpecSpoofClient.daFPS) {
-            SpecSpoofClient.LOG.info("FPS value field has changed. New value: '{}', Old value: '{}'", this.fpsValueField.getText(), SpecSpoofClient.daFPS);
+            SpecSpoofClient.LOG.info("FPS value field has changed. New value: '{}', Old value: '{}'", this.fpsValueField.getInt(), SpecSpoofClient.daFPS);
             shouldActivate = true;
         }
 

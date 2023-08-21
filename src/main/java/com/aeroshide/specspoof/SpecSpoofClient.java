@@ -1,6 +1,8 @@
 package com.aeroshide.specspoof;
 
 import com.aeroshide.specspoof.config.Config;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.loader.api.FabricLoader;
 import org.apache.logging.log4j.LogManager;
@@ -16,7 +18,7 @@ public class SpecSpoofClient implements ClientModInitializer {
     public static final Logger LOG = LogManager.getLogger("SpecSpoof");
 
 
-    public static boolean configIssues = false;
+    public static boolean configIssues = true;
 
     // don't ask me why this shit's hardcoded lmao
     // spoiler alert: it prevents crashes from my shitty config backend
@@ -29,15 +31,30 @@ public class SpecSpoofClient implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
         fetchConfig();
+
     }
 
-    public static void fetchConfig()
-    {
-        daCPUName = (String) config.getOption("CPU");
-        daGPUName = (String) config.getOption("GPU");
-        daFPS = (int) config.getOption("FPS");
-        disableFPSThreshold = (int) config.getOption("disableFPSThreshold");
+    public static void fetchConfig() {
+        if (config.getOption("GPU") == null || config.getOption("CPU") == null || config.getOption("FPS") == null || config.getOption("FPS") == null || (int) config.getOption("FPS") <= 0 || (int) config.getOption("FPS") >= 999999 || (int) config.getOption("disableFPSThreshold") <= 0 || (int) config.getOption("disableFPSThreshold") >= 999999) {
+            configIssues = false;
+
+            if (!config.doesExists()) {
+                config.initConfig();
+                LOG.error("Config file missing somehow, creating another");
+            }
+            else {
+                LOG.error("Could not load config due to invalid data");
+            }
+        } else {
+            configIssues = true;
+            daCPUName = (String) config.getOption("CPU");
+            daGPUName = (String) config.getOption("GPU");
+            daFPS = (int) config.getOption("FPS");
+            disableFPSThreshold = (int) config.getOption("disableFPSThreshold");
+            LOG.info("Loaded config!");
+        }
     }
+
 
 
 }

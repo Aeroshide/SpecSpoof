@@ -34,6 +34,11 @@ public class Config {
     }
 
     public Object getOption(String key) {
+        if (data == null)
+        {
+            return null;
+        }
+
         Object value = data.get(key);
         if (value instanceof Double) {
             Double doubleValue = (Double) value;
@@ -48,6 +53,14 @@ public class Config {
     public void setOption(String key, Object value) {
         data.put(key, value);
         saveConfig();
+    }
+
+    public boolean doesExists()
+    {
+        if (!config.exists()) {
+            return false;
+        }
+        return true;
     }
 
     private void loadConfig() {
@@ -80,7 +93,7 @@ public class Config {
     }
 
 
-    private void initConfig() {
+    public void initConfig() {
         data = new HashMap<>();
         data.put("CPU", SpecSpoofClient.daCPUName);
         data.put("GPU", SpecSpoofClient.daGPUName);
