@@ -38,10 +38,12 @@ public class SpecSpoofClient implements ClientModInitializer {
     public static void fetchConfig() {
         config.loadConfig();
 
-        if (config.getOption("GPUVendor") == null || config.getOption("GPUDriver") == null || config.getOption("GPU") == null || config.getOption("CPU") == null || config.getOption("FPS") == null || config.getOption("disableFPSThreshold") == null || !(config.getOption("FPS") instanceof Integer) || !(config.getOption("disableFPSThreshold") instanceof Integer) || (Integer) config.getOption("FPS") <= 0 || (Integer) config.getOption("FPS") > 999999 || (Integer) config.getOption("disableFPSThreshold") <= 0 || (Integer) config.getOption("disableFPSThreshold") > 999999 || !configIssues) {
+        if (!(config.getOption("FPS") instanceof Integer) || !(config.getOption("disableFPSThreshold") instanceof Integer)){
             configIssues = false;
-
             LOG.error("Could not fetch config due to invalid data");
+        }
+        else if (config.getOption("GPUVendor") == null || config.getOption("GPUDriver") == null || config.getOption("GPU") == null || config.getOption("CPU") == null || config.getOption("FPS") == null || config.getOption("disableFPSThreshold") == null || (Integer) config.getOption("FPS") <= 0 || (Integer) config.getOption("FPS") > 999999 || (Integer) config.getOption("disableFPSThreshold") <= 0 || (Integer) config.getOption("disableFPSThreshold") > 999999 || !configIssues) {
+            LOG.warn("An error was found in config file, trying to fix.");
             config.initConfig(false);
         } else {
             configIssues = true;

@@ -109,7 +109,6 @@ public class Config {
             return;
         }
 
-        boolean didFixSomething = false;
 
         if (data == null) {
             data = new HashMap<>();
@@ -127,11 +126,11 @@ public class Config {
             if (!data.containsKey(entry.getKey())) {
                 data.put(entry.getKey(), entry.getValue());
                 SpecSpoofClient.LOG.warn("Missing Key {}, Value: {}. adding them.", entry.getKey(), entry.getValue());
-                didFixSomething = true;
             }
         }
 
-        SpecSpoofClient.configIssues = didFixSomething;
+        SpecSpoofClient.configIssues = true;
+
         saveConfig();
     }
 
