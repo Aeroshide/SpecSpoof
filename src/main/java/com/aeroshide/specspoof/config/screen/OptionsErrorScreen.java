@@ -27,7 +27,7 @@ public class OptionsErrorScreen extends Screen {
         this.addDrawableChild(ButtonWidget.builder(Text.translatable("specspoof.resetOptions"), (button) -> {
             SpecSpoofClient.configIssues = true;
             client.setScreen(new OptionsScreen(this.originalParent));
-            SpecSpoofClient.config.initConfig();
+            SpecSpoofClient.config.initConfig(true);
             SpecSpoofClient.LOG.info("Reloading Config!");
             SpecSpoofClient.fetchConfig();
         }).dimensions(this.width / 2 - 155 + 160, this.height / 4 + 120 + 12, 150, 20).build());

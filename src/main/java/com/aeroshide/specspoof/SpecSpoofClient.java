@@ -38,16 +38,11 @@ public class SpecSpoofClient implements ClientModInitializer {
     public static void fetchConfig() {
         config.loadConfig();
 
-        if (config.getOption("GPUVendor") == null || config.getOption("GPUDriver") == null || config.getOption("GPU") == null || config.getOption("CPU") == null || config.getOption("FPS") == null || config.getOption("FPS") == null || (int) config.getOption("FPS") <= 0 || (int) config.getOption("FPS") > 999999 || (int) config.getOption("disableFPSThreshold") <= 0 || (int) config.getOption("disableFPSThreshold") > 999999 || !configIssues) {
+        if (config.getOption("GPUVendor") == null || config.getOption("GPUDriver") == null || config.getOption("GPU") == null || config.getOption("CPU") == null || config.getOption("FPS") == null || config.getOption("disableFPSThreshold") == null || !(config.getOption("FPS") instanceof Integer) || !(config.getOption("disableFPSThreshold") instanceof Integer) || (Integer) config.getOption("FPS") <= 0 || (Integer) config.getOption("FPS") > 999999 || (Integer) config.getOption("disableFPSThreshold") <= 0 || (Integer) config.getOption("disableFPSThreshold") > 999999 || !configIssues) {
             configIssues = false;
 
-            if (!config.doesExists()) {
-                config.initConfig();
-                LOG.error("Config file missing somehow, creating another");
-            }
-            else {
-                LOG.error("Could not fetch config due to invalid data");
-            }
+            LOG.error("Could not fetch config due to invalid data");
+            config.initConfig(false);
         } else {
             configIssues = true;
             daCPUName = (String) config.getOption("CPU");

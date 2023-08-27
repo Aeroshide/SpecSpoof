@@ -15,7 +15,6 @@ import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.aeroshide.specspoof.SpecSpoofClient.LOG;
 
 public class Config {
     private static Config instance;
@@ -40,10 +39,11 @@ public class Config {
         }
 
         Object value = data.get(key);
+        SpecSpoofClient.LOG.info(value);
         if (value instanceof Double) {
-            Double doubleValue = (Double) value;
+            double doubleValue = (Double) value;
             if (doubleValue == Math.floor(doubleValue)) {
-                return doubleValue.intValue();
+                return (int) doubleValue;
             }
         }
         return value;
@@ -55,6 +55,7 @@ public class Config {
         saveConfig();
     }
 
+
     public boolean doesExists()
     {
         return config.exists();
@@ -63,7 +64,7 @@ public class Config {
 
     public void loadConfig() {
         if (!config.exists()) {
-            initConfig();
+            initConfig(true);
         }
         try (Reader reader = new FileReader(config)) {
             GsonBuilder builder = new GsonBuilder();
@@ -84,33 +85,74 @@ public class Config {
             Gson gson = builder.create();
             Type type = new TypeToken<HashMap<String, Object>>(){}.getType();
             data = gson.fromJson(reader, type);
-            LOG.info("Config Loaded!");
+            SpecSpoofClient.LOG.info("Config Loaded!");
             SpecSpoofClient.configIssues = true;
         } catch (IOException | JsonSyntaxException e) {
-            LOG.error("Invalid data in configuration file: " + e.getMessage());
+            SpecSpoofClient.LOG.error("Invalid data in configuration file: " + e.getMessage());
             SpecSpoofClient.configIssues = false;
         }
     }
 
 
-    public void initConfig() {
-        data = new HashMap<>();
-        data.put("CPU", SpecSpoofClient.daCPUName);
-        data.put("GPU", SpecSpoofClient.daGPUName);
-        data.put("FPS", SpecSpoofClient.daFPS);
-        data.put("disableFPSThreshold", SpecSpoofClient.disableFPSThreshold);
-        data.put("GPUVendor", SpecSpoofClient.daGPUVendor);
-        data.put("GPUDriver", SpecSpoofClient.daGPUDriver);
-        SpecSpoofClient.configIssues = false;
+    public void initConfig(boolean hardreset) {
+        if (hardreset)
+        {
+            data = new HashMap<>();
+            data.put("CPU", SpecSpoofClient.daCPUName);
+            data.put("GPU", SpecSpoofClient.daGPUName);
+            data.put("FPS", SpecSpoofClient.daFPS);
+            data.put("disableFPSThreshold", SpecSpoofClient.disableFPSThreshold);
+            data.put("GPUVendor", SpecSpoofClient.daGPUVendor);
+            data.put("GPUDriver", SpecSpoofClient.daGPUDriver);
+            SpecSpoofClient.configIssues = true;
+            saveConfig();
+            return;
+        }
+
+        boolean didFixSomething = false;
+
+        if (data == null) {
+            data = new HashMap<>();
+        }
+
+        Map<String, Object> defaultConfig = new HashMap<>();
+        defaultConfig.put("CPU", SpecSpoofClient.daCPUName);
+        defaultConfig.put("GPU", SpecSpoofClient.daGPUName);
+        defaultConfig.put("FPS", SpecSpoofClient.daFPS);
+        defaultConfig.put("disableFPSThreshold", SpecSpoofClient.disableFPSThreshold);
+        defaultConfig.put("GPUVendor", SpecSpoofClient.daGPUVendor);
+        defaultConfig.put("GPUDriver", SpecSpoofClient.daGPUDriver);
+
+        for (Map.Entry<String, Object> entry : defaultConfig.entrySet()) {
+            if (!data.containsKey(entry.getKey())) {
+                data.put(entry.getKey(), entry.getValue());
+                SpecSpoofClient.LOG.warn("Missing Key {}, Value: {}. adding them.", entry.getKey(), entry.getValue());
+                didFixSomething = true;
+            }
+        }
+
+        SpecSpoofClient.configIssues = didFixSomething;
         saveConfig();
     }
 
+
+
+
     private void saveConfig() {
         try (Writer writer = new FileWriter(config)) {
-            Gson gson = new GsonBuilder().setPrettyPrinting().create();
+            GsonBuilder builder = new GsonBuilder();
+            builder.registerTypeAdapter(Double.class, (JsonSerializer<Double>) (src, typeOfSrc, context) -> {
+                if (src == Math.floor(src)) {
+                    return new JsonPrimitive(src.intValue());
+                } else {
+                    return new JsonPrimitive(src);
+                }
+            });
+            Gson gson = builder.setPrettyPrinting().create();
             gson.toJson(data, writer);
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
+
 }
