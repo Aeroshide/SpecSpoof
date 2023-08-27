@@ -25,6 +25,8 @@ public class SpecSpoofClient implements ClientModInitializer {
     public static String daCPUName = "32x 13th Gen Intel(R) Core(TM) i9-13900K";
     public static String daGPUName = "NVIDIA GeForce RTX 4090/PCIe/SSE2";
     public static int daFPS = 1000;
+    public static String daGPUVendor = "NVIDIA Corporation";
+    public static String daGPUDriver = "3.2.0 NVIDIA 531.37";
     public static Config config = Config.getInstance();
     public static int disableFPSThreshold = 100;
 
@@ -36,7 +38,7 @@ public class SpecSpoofClient implements ClientModInitializer {
     public static void fetchConfig() {
         config.loadConfig();
 
-        if (config.getOption("GPU") == null || config.getOption("CPU") == null || config.getOption("FPS") == null || config.getOption("FPS") == null || (int) config.getOption("FPS") <= 0 || (int) config.getOption("FPS") > 999999 || (int) config.getOption("disableFPSThreshold") <= 0 || (int) config.getOption("disableFPSThreshold") > 999999 || !configIssues) {
+        if (config.getOption("GPUVendor") == null || config.getOption("GPUDriver") == null || config.getOption("GPU") == null || config.getOption("CPU") == null || config.getOption("FPS") == null || config.getOption("FPS") == null || (int) config.getOption("FPS") <= 0 || (int) config.getOption("FPS") > 999999 || (int) config.getOption("disableFPSThreshold") <= 0 || (int) config.getOption("disableFPSThreshold") > 999999 || !configIssues) {
             configIssues = false;
 
             if (!config.doesExists()) {
@@ -52,6 +54,8 @@ public class SpecSpoofClient implements ClientModInitializer {
             daGPUName = (String) config.getOption("GPU");
             daFPS = (int) config.getOption("FPS");
             disableFPSThreshold = (int) config.getOption("disableFPSThreshold");
+            daGPUVendor = (String) config.getOption("GPUVendor");
+            daGPUDriver = (String) config.getOption("GPUDriver");
         }
     }
 

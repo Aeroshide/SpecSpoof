@@ -19,4 +19,14 @@ public class GIDDebugInfoMixin {
     private static void modifyGPUGL(CallbackInfoReturnable<String> cir) {
         cir.setReturnValue(SpecSpoofClient.daGPUName);
     }
+
+    @Inject(method = "getVersion", at = @At("RETURN"), cancellable = true)
+    private static void modifyDriverGL(CallbackInfoReturnable<String> cir) {
+        cir.setReturnValue(SpecSpoofClient.daGPUDriver);
+    }
+
+    @Inject(method = "getVendor", at = @At("RETURN"), cancellable = true)
+    private static void modifyVendorGL(CallbackInfoReturnable<String> cir) {
+        cir.setReturnValue(SpecSpoofClient.daGPUVendor);
+    }
 }

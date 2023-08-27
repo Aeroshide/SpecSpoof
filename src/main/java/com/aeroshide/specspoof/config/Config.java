@@ -99,6 +99,8 @@ public class Config {
         data.put("GPU", SpecSpoofClient.daGPUName);
         data.put("FPS", SpecSpoofClient.daFPS);
         data.put("disableFPSThreshold", SpecSpoofClient.disableFPSThreshold);
+        data.put("GPUVendor", SpecSpoofClient.daGPUVendor);
+        data.put("GPUDriver", SpecSpoofClient.daGPUDriver);
         SpecSpoofClient.configIssues = false;
         saveConfig();
     }
