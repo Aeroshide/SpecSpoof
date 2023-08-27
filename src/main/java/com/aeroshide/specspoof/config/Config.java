@@ -64,7 +64,7 @@ public class Config {
 
     public void loadConfig() {
         if (!config.exists()) {
-            initConfig(true);
+            initConfig(true, false);
         }
         try (Reader reader = new FileReader(config)) {
             GsonBuilder builder = new GsonBuilder();
@@ -94,7 +94,7 @@ public class Config {
     }
 
 
-    public void initConfig(boolean hardreset) {
+    public void initConfig(boolean hardreset, boolean repair) {
         if (hardreset)
         {
             data = new HashMap<>();
@@ -129,7 +129,8 @@ public class Config {
             }
         }
 
-        SpecSpoofClient.configIssues = true;
+        if (!repair)
+            SpecSpoofClient.configIssues = true;
 
         saveConfig();
     }
