@@ -81,10 +81,10 @@ public class DataHolder {
             // Retrieve and store options
             daCPUName = (String) config.getOption("CPU");
             daGPUName = (String) config.getOption("GPU");
-            daFPS = (Integer) config.getOption("FakeFPS");
+            daFPS = ((Number) config.getOption("FakeFPS")).intValue();
             daGPUVendor = (String) config.getOption("GPUVendor");
             daGPUDriver = (String) config.getOption("GPUDriverVersion");
-            disableFPSThreshold = (Integer) config.getOption("DisableFakeFPSThreshold");
+            disableFPSThreshold = ((Number) config.getOption("DisableFakeFPSThreshold")).intValue();
 
             System.out.println("Options fetched successfully");
         } catch (Exception e) {

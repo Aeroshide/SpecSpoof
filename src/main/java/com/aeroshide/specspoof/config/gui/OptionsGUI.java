@@ -9,9 +9,6 @@ import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.SliderWidget;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.text.Text;
-import net.minecraft.util.Util;
-
-import java.io.File;
 
 public class OptionsGUI extends Screen {
 
@@ -37,7 +34,7 @@ public class OptionsGUI extends Screen {
     private ButtonWidget nextPageButton;
     private ButtonWidget prevPageButton;
 
-    private int tempDFPST = SpecSpoofClient.disableFPSThreshold;
+    private Number tempDFPST = SpecSpoofClient.disableFPSThreshold;
     // current task: trying to have config in-outs from my new UI system :)
 
     public OptionsGUI(Screen parent) {
@@ -48,6 +45,7 @@ public class OptionsGUI extends Screen {
     @Override
     public void init()
     {
+        tempDFPST = DataHolder.getDisableFPSThreshold();
 
         this.cpuNameField = new TextFieldWidget(this.textRenderer, this.width / 2 - 100, 44, 200, 20, Text.translatable("specspoof.cpu"));
         this.cpuNameField.setMaxLength(64);
@@ -76,7 +74,7 @@ public class OptionsGUI extends Screen {
                 }
                 else
                 {
-                    tempDFPST = (int) (value * (260.0 - 1.0) + 1.0);
+                    tempDFPST = (value * (260.0 - 1.0) + 1.0);
                 }
 
 
