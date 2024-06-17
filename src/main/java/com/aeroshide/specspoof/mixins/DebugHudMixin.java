@@ -20,7 +20,6 @@ import java.util.List;
 public class DebugHudMixin {
     @Inject(method = "getRightText", at = @At("RETURN"))
     private void getRightText(CallbackInfoReturnable<List<String>> info) {
-        List<String> rightText = info.getReturnValue();
-        if (!SpecSpoofClient.configIssues) rightText.add(Formatting.RED + "[SpecSpoof] Your config has issues, using hardcoded settings");
+
     }
 }

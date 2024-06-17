@@ -28,6 +28,7 @@
   ],
   "depends": {
     "fabricloader": ">=0.12.10",
-    "minecraft": ">=1.14"
+    "minecraft": ">=1.21",
+    "rose_bush": ">=1.1.1"
   }
 }
