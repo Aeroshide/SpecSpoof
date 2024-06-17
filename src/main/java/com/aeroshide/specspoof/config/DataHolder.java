@@ -18,9 +18,9 @@ public class DataHolder {
     private static int daFPS;
     private static int disableFPSThreshold;
 
-    private static final int GPU_RENDERER = 7937;
-    private static final int GPU_VENDOR = 7936;
-    private static final int GPU_VERSION = 7938;
+    public static final int GPU_RENDERER = 7937;
+    public static final int GPU_VENDOR = 7936;
+    public static final int GPU_VERSION = 7938;
 
     public static String getDaCPUName() {
         if (daCPUName == null) {

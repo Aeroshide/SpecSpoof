@@ -23,16 +23,6 @@ public class SpecSpoofClient implements ClientModInitializer {
     public static Config config = Config.getInstance("config/SpecSpoof.json");
 
 
-    // don't ask me why this shit's hardcoded lmao
-    // spoiler alert: it prevents crashes from my shitty config backend
-    public static String daCPUName;
-    public static String daGPUName;
-    public static int daFPS;
-    public static String daGPUVendor;
-    public static String daGPUDriver;
-    public static int disableFPSThreshold;
-
-
 
 
 
