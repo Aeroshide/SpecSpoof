@@ -67,11 +67,9 @@ public class DataHolder {
     public static void fetchOptions() {
         try {
             // Manually fetch CPU data
-            CentralProcessor centralProcessor = (new SystemInfo()).getHardware().getProcessor();
-            String cpuInfo = String.format(Locale.ROOT, "%dx %s", centralProcessor.getLogicalProcessorCount(), centralProcessor.getProcessorIdentifier().getName()).replaceAll("\\s+", " ");
 
             // Set options using the generic method
-            setOptionIfAbsent("CPU", () -> cpuInfo);
+            setOptionIfAbsent("CPU", () -> fetchCPUData());
             setOptionIfAbsent("GPU", () -> GlStateManager._getString(GPU_RENDERER));
             setOptionIfAbsent("GPUVendor", () -> GlStateManager._getString(GPU_VENDOR));
             setOptionIfAbsent("GPUDriverVersion", () -> GlStateManager._getString(GPU_VERSION));
@@ -99,6 +97,20 @@ public class DataHolder {
         }
     }
 
+    static private String fetchCPUData()
+    {
+        try
+        {
+            CentralProcessor centralProcessor = (new SystemInfo()).getHardware().getProcessor();
+            return String.format(Locale.ROOT, "%dx %s", centralProcessor.getLogicalProcessorCount(), centralProcessor.getProcessorIdentifier().getName()).replaceAll("\\s+", " ");
+        } catch (NoClassDefFoundError e)
+        {
+            SpecSpoofClient.LOG.error("Unable to fetch hardware information, init will be inaccurate!");
+            return "1x unknown";
+        }
+
+
+    }
     private static <T> void setOptionIfAbsent(String optionKey, Supplier<T> valueSupplier) {
         if (config.getOption(optionKey) == null) {
             config.setOption(optionKey, valueSupplier.get());
