@@ -179,7 +179,7 @@ public class OptionsGUI extends Screen {
         SpecSpoofClient.config.setOption("GPU", this.gpuNameField.getText());
         SpecSpoofClient.config.setOption("FakeFPS", Integer.parseInt(this.fpsValueField.getText()));
         SpecSpoofClient.config.setOption("DisableFakeFPSThreshold", tempDFPST);
-        SpecSpoofClient.config.setOption("GPUDriver", this.gpuDriverField.getText());
+        SpecSpoofClient.config.setOption("GPUDriverVersion", this.gpuDriverField.getText());
         SpecSpoofClient.config.setOption("GPUVendor", this.gpuVendorField.getText());
 
     }
