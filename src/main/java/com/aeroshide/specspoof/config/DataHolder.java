@@ -2,6 +2,9 @@ package com.aeroshide.specspoof.config;
 
 import com.aeroshide.specspoof.SpecSpoofClient;
 import com.mojang.blaze3d.platform.GlStateManager;
+import net.fabricmc.loader.api.FabricLoader;
+import net.vulkanmod.vulkan.Vulkan;
+import net.vulkanmod.vulkan.device.DeviceManager;
 import oshi.SystemInfo;
 import oshi.hardware.CentralProcessor;
 
@@ -9,6 +12,7 @@ import java.util.Locale;
 import java.util.function.Supplier;
 
 import static com.aeroshide.specspoof.SpecSpoofClient.config;
+import static com.aeroshide.specspoof.SpecSpoofClient.isVulkanmodInstalled;
 
 public class DataHolder {
     private static String daCPUName;
@@ -66,26 +70,30 @@ public class DataHolder {
 
     public static void fetchOptions() {
         try {
-            // Manually fetch CPU data
+            // Ensure config is initialized
+            if (config == null) {
+                throw new IllegalStateException("Config is not initialized");
+            }
 
             // Set options using the generic method
             setOptionIfAbsent("CPU", () -> fetchCPUData());
-            setOptionIfAbsent("GPU", () -> GlStateManager._getString(GPU_RENDERER));
-            setOptionIfAbsent("GPUVendor", () -> GlStateManager._getString(GPU_VENDOR));
-            setOptionIfAbsent("GPUDriverVersion", () -> GlStateManager._getString(GPU_VERSION));
+            setOptionIfAbsent("GPU", () -> (isVulkanmodInstalled ? DeviceManager.device.deviceName : GlStateManager._getString(GPU_RENDERER)));
+            setOptionIfAbsent("GPUVendor", () -> (isVulkanmodInstalled ?DeviceManager.device.vendorIdString:GlStateManager._getString(GPU_VENDOR)));
+            setOptionIfAbsent("GPUDriverVersion", () -> (isVulkanmodInstalled ? DeviceManager.device.driverVersion : GlStateManager._getString(GPU_VERSION)));
             setOptionIfAbsent("FakeFPS", () -> 1000);
             setOptionIfAbsent("DisableFakeFPSThreshold", () -> 100);
 
             // Retrieve and store options
             daCPUName = (String) config.getOption("CPU");
             daGPUName = (String) config.getOption("GPU");
-            daFPS = ((Number) config.getOption("FakeFPS")).intValue();
+            daFPS = config.getOption("FakeFPS") instanceof Number ? ((Number) config.getOption("FakeFPS")).intValue() : 0;
             daGPUVendor = (String) config.getOption("GPUVendor");
             daGPUDriver = (String) config.getOption("GPUDriverVersion");
-            disableFPSThreshold = ((Number) config.getOption("DisableFakeFPSThreshold")).intValue();
+            disableFPSThreshold = config.getOption("DisableFakeFPSThreshold") instanceof Number ? ((Number) config.getOption("DisableFakeFPSThreshold")).intValue() : 0;
 
             System.out.println("Options fetched successfully");
         } catch (Exception e) {
+            System.err.println("Failed to fetch options: " + e.getMessage());
             e.printStackTrace();
             // Handle the exception or set default values
             daCPUName = "Unknown CPU";
@@ -97,11 +105,16 @@ public class DataHolder {
         }
     }
 
-    static private String fetchCPUData()
+
+    public static String fetchCPUData()
     {
         try
         {
             CentralProcessor centralProcessor = (new SystemInfo()).getHardware().getProcessor();
+            if (isVulkanmodInstalled)
+            {
+                return String.format("%s", centralProcessor.getProcessorIdentifier().getName()).replaceAll("\\s+", " ");
+            }
             return String.format(Locale.ROOT, "%dx %s", centralProcessor.getLogicalProcessorCount(), centralProcessor.getProcessorIdentifier().getName()).replaceAll("\\s+", " ");
         } catch (NoClassDefFoundError e)
         {

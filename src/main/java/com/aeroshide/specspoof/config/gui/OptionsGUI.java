@@ -10,9 +10,11 @@ import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.SliderWidget;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.text.Text;
+import net.vulkanmod.vulkan.device.DeviceManager;
 import oshi.SystemInfo;
 import oshi.hardware.CentralProcessor;
 
+import javax.xml.crypto.Data;
 import java.util.Locale;
 
 import static com.aeroshide.specspoof.config.DataHolder.*;
@@ -61,9 +63,7 @@ public class OptionsGUI extends Screen {
         this.cpuNameField.setText(DataHolder.getDaCPUName());
 
         this.resetCPUnameField = this.addDrawableChild(ButtonWidget.builder(Text.literal("R"), (button) -> {
-            CentralProcessor centralProcessor = (new SystemInfo()).getHardware().getProcessor();
-            String cpuInfo = String.format(Locale.ROOT, "%dx %s", centralProcessor.getLogicalProcessorCount(), centralProcessor.getProcessorIdentifier().getName()).replaceAll("\\s+", " ");
-            cpuNameField.setText(cpuInfo);
+            cpuNameField.setText(DataHolder.fetchCPUData());
         }).dimensions(this.cpuNameField.getX() + 205, this.cpuNameField.getY(), 20, 20).build());
 
         this.gpuNameField = new TextFieldWidget(this.textRenderer, this.width / 2 - 100, 44 + 35, 200, 20, Text.translatable("specspoof.gpu"));
@@ -71,7 +71,7 @@ public class OptionsGUI extends Screen {
         this.gpuNameField.setText(DataHolder.getDaGPUName());
 
         this.resetGPUnameField = this.addDrawableChild(ButtonWidget.builder(Text.literal("R"), (button) -> {
-            gpuNameField.setText(GlStateManager._getString(GPU_RENDERER));
+            gpuNameField.setText(SpecSpoofClient.isVulkanmodInstalled? DeviceManager.device.deviceName:GlStateManager._getString(GPU_RENDERER));
         }).dimensions(this.gpuNameField.getX() + 205, this.gpuNameField.getY(), 20, 20).build());
 
 
@@ -120,7 +120,7 @@ public class OptionsGUI extends Screen {
         this.gpuDriverField.setText(DataHolder.getDaGPUDriver());
 
         this.resetgpuDriverField = this.addDrawableChild(ButtonWidget.builder(Text.literal("R"), (button) -> {
-            gpuDriverField.setText(GlStateManager._getString(GPU_VERSION));
+            gpuDriverField.setText(SpecSpoofClient.isVulkanmodInstalled? DeviceManager.device.driverVersion:GlStateManager._getString(GPU_VERSION));
         }).dimensions(this.gpuDriverField.getX() + 205, this.gpuDriverField.getY(), 20, 20).build());
 
         this.gpuVendorField = new TextFieldWidget(this.textRenderer, this.width / 2 - 100, 44 + 35, 200, 20, Text.translatable("specspoof.gpuVendor"));
@@ -128,7 +128,7 @@ public class OptionsGUI extends Screen {
         this.gpuVendorField.setText(DataHolder.getDaGPUVendor());
 
         this.resetgpuVendorField = this.addDrawableChild(ButtonWidget.builder(Text.literal("R"), (button) -> {
-            gpuVendorField.setText(GlStateManager._getString(GPU_VENDOR));
+            gpuVendorField.setText(SpecSpoofClient.isVulkanmodInstalled? DeviceManager.device.vendorIdString:GlStateManager._getString(GPU_VENDOR));
         }).dimensions(this.gpuVendorField.getX() + 205, this.gpuVendorField.getY(), 20, 20).build());
 
         this.nextPageButton = this.addDrawableChild(ButtonWidget.builder(Text.literal(">"), (button) -> {

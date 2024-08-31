@@ -35,6 +35,7 @@ dependencies {
     modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
     modImplementation("com.terraformersmc:modmenu:${project.modmenu_version}")
     modImplementation "maven.modrinth:rose-bush:${project.roselib_version}"
+    modImplementation "maven.modrinth:vulkanmod:US6s2g38"
 
     }
 

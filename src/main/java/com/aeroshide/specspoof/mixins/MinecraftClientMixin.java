@@ -20,6 +20,7 @@ public class MinecraftClientMixin {
 
 
 
+
     @ModifyVariable(at = @At(value = "FIELD", target = "Lnet/minecraft/client/MinecraftClient;fpsCounter:I"), method = "render(Z)V", index = 1, argsOnly = true)
     private boolean addFakeFPS(boolean value) {
 

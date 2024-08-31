@@ -8,26 +8,30 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-@Mixin(GlDebugInfo.class)
+@Mixin(value = GlDebugInfo.class)
 public class GIDDebugInfoMixin {
 
     @Inject(method = "getCpuInfo", at = @At("RETURN"), cancellable = true)
     private static void modifyCPUGL(CallbackInfoReturnable<String> cir) {
-        cir.setReturnValue(DataHolder.getDaCPUName());
+        if (!SpecSpoofClient.isVulkanmodInstalled)
+            cir.setReturnValue(DataHolder.getDaCPUName());
     }
 
     @Inject(method = "getRenderer", at = @At("RETURN"), cancellable = true)
     private static void modifyGPUGL(CallbackInfoReturnable<String> cir) {
-        cir.setReturnValue(DataHolder.getDaGPUName());
+        if (!SpecSpoofClient.isVulkanmodInstalled)
+            cir.setReturnValue(DataHolder.getDaGPUName());
     }
 
     @Inject(method = "getVersion", at = @At("RETURN"), cancellable = true)
     private static void modifyDriverGL(CallbackInfoReturnable<String> cir) {
-        cir.setReturnValue(DataHolder.getDaGPUDriver());
+        if (!SpecSpoofClient.isVulkanmodInstalled)
+            cir.setReturnValue(DataHolder.getDaGPUDriver());
     }
 
     @Inject(method = "getVendor", at = @At("RETURN"), cancellable = true)
     private static void modifyVendorGL(CallbackInfoReturnable<String> cir) {
-        cir.setReturnValue(DataHolder.getDaGPUVendor());
+        if (!SpecSpoofClient.isVulkanmodInstalled)
+            cir.setReturnValue(DataHolder.getDaGPUVendor());
     }
 }
