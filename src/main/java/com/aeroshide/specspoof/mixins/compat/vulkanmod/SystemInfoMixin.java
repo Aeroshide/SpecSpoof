@@ -1,4 +1,5 @@
-package com.aeroshide.specspoof.mixins;
+
+package com.aeroshide.specspoof.mixins.compat.vulkanmod;
 
 import com.aeroshide.specspoof.SpecSpoofClient;
 import com.aeroshide.specspoof.config.DataHolder;
@@ -14,7 +15,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
-@Mixin(SystemInfo.class)
+@Mixin(value = SystemInfo.class, remap = false)
 public class SystemInfoMixin {
 
     // Shadow the static final field

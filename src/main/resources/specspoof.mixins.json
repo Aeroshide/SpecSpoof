@@ -1,16 +1,19 @@
 {
-  "required": true,
+  "required": false,
   "minVersion": "0.8",
   "package": "com.aeroshide.specspoof.mixins",
   "compatibilityLevel": "JAVA_8",
   "client": [
-    "DebugHudMixin",
-    "GIDDebugInfoMixin",
-    "MinecraftClientMixin",
-    "SystemInfoMixin",
-    "VulkanMixin"
+    "GlBackend",
+    "GLXMixin",
+    "MinecraftClientMixin"
   ],
   "injectors": {
     "defaultRequire": 1
-  }
+  },
+  "mixins": [
+    "compat.sodiumextra.FrameCounterMixin",
+    "compat.vulkanmod.SystemInfoMixin",
+    "compat.vulkanmod.VulkanMixin"
+  ]
 }

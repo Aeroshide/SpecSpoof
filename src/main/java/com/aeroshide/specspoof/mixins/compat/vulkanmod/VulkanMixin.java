@@ -1,4 +1,4 @@
-package com.aeroshide.specspoof.mixins;
+package com.aeroshide.specspoof.mixins.compat.vulkanmod;
 
 import com.aeroshide.specspoof.SpecSpoofClient;
 import com.aeroshide.rose_bush.modifier.FieldModifier;
@@ -14,7 +14,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
-@Mixin(Vulkan.class)
+@Mixin(value = Vulkan.class, remap = false)
 public class VulkanMixin {
 
     // dude you dont know how proud i am for this shit
@@ -24,7 +24,7 @@ public class VulkanMixin {
 
         try {
             SpecSpoofClient.Roselib_FieldModifier.modifyFinalField(modifiedDeviceInfo, "deviceName", DataHolder.getDaGPUName());
-            SpecSpoofClient.Roselib_FieldModifier.modifyFinalField(modifiedDeviceInfo, "driverVersion", DataHolder.getDaGPUDriver());
+
             // modifyFinalField(modifiedDeviceInfo, "vkVersion", DataHolder.getDaGPUVendor());
         } catch (Exception e) {
             e.printStackTrace();

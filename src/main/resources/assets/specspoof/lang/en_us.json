@@ -6,6 +6,7 @@
   "specspoof.fpsThres": "Disable Fraud FPS At: %d",
   "specspoof.gpuDriver": "GPU Driver",
   "specspoof.gpuVendor": "GPU Vendor",
+  "specspoof.gpuBackend": "GPU Backend",
   "specspoof.save": "Save Changes",
   "specspoof.openCfg": "Open JSON File",
   "specspoof.discard": "Discard",
