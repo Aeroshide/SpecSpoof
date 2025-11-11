@@ -4,6 +4,7 @@ import com.aeroshide.specspoof.FakeFPSManager;
 import com.aeroshide.specspoof.SpecSpoofClient;
 import com.aeroshide.specspoof.config.DataHolder;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.hud.DebugHud;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;

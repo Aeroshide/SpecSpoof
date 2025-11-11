@@ -42,7 +42,7 @@ dependencies {
     //modRuntimeOnly("maven.modrinth:sodium-extra:JK9FUEto")
     //modRuntimeOnly("maven.modrinth:sodium-extra:JK9FUEto")
     //modRuntimeOnly("maven.modrinth:sodium:VTidoe6U")
-    //modRuntimeOnly("com.terraformersmc:modmenu:${project.modmenu_version}")
+    modRuntimeOnly("com.terraformersmc:modmenu:${project.modmenu_version}")
 
     }
 

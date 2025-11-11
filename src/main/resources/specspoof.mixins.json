@@ -4,9 +4,11 @@
   "package": "com.aeroshide.specspoof.mixins",
   "compatibilityLevel": "JAVA_8",
   "client": [
+    "DebugHudMixin",
     "GlBackend",
     "GLXMixin",
-    "MinecraftClientMixin"
+    "MinecraftClientMixin",
+    "MultiValueDebugSampleLogImplMixin"
   ],
   "injectors": {
     "defaultRequire": 1
