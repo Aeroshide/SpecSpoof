@@ -15,8 +15,11 @@ import java.util.Deque;
 
 @Mixin(value = FrameCounter.class, remap = false)
 public class FrameCounterMixin {
+    @Unique
     private static final Logger LOGGER = LogManager.getLogger("SpecSpoof/SodiumCompat");
+    @Unique
     private static final boolean DEBUG = false;
+    @Unique
     private static boolean reflectionReady = false;
 
     @Inject(method = "onFrame", at = @At("HEAD"))

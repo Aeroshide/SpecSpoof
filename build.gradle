@@ -1,5 +1,5 @@
 plugins {
-    id 'fabric-loom' version '1.11-SNAPSHOT'
+    id 'net.fabricmc.fabric-loom' version '1.15-SNAPSHOT'
     id 'maven-publish'
 }
 
@@ -30,19 +30,17 @@ repositories {
 dependencies {
     // To change the versions see the gradle.properties file
     minecraft "com.mojang:minecraft:${project.minecraft_version}"
-    mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
-    modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
-    modRuntimeOnly("net.fabricmc.fabric-api:fabric-api:0.138.0+1.21.10")
-    modCompileOnly("com.terraformersmc:modmenu:${project.modmenu_version}")
-    modImplementation "maven.modrinth:rose-bush:${project.roselib_version}"
-    modCompileOnly "maven.modrinth:vulkanmod:7pYvUnJk"
-    modCompileOnly "maven.modrinth:sodium-extra:JK9FUEto"
+    implementation "net.fabricmc:fabric-loader:${project.loader_version}"
+    compileOnly("net.fabricmc.fabric-api:fabric-api:0.144.3+26.1")
+    implementation("com.terraformersmc:modmenu:${project.modmenu_version}")
+    implementation "maven.modrinth:rose-bush:${project.roselib_version}"
+    // compileOnly "maven.modrinth:vulkanmod:7pYvUnJk"
+    compileOnly "maven.modrinth:sodium-extra:mc26.1-0.8.4+fabric"
 
     // debugging jank
+    runtimeOnly("maven.modrinth:sodium-extra:mc26.1-0.8.4+fabric")
     //modRuntimeOnly("maven.modrinth:sodium-extra:JK9FUEto")
-    //modRuntimeOnly("maven.modrinth:sodium-extra:JK9FUEto")
-    //modRuntimeOnly("maven.modrinth:sodium:VTidoe6U")
-    modRuntimeOnly("com.terraformersmc:modmenu:${project.modmenu_version}")
+    runtimeOnly("maven.modrinth:sodium:mc26.1-0.8.7-fabric")
 
     }
 
@@ -50,16 +48,18 @@ processResources {
     inputs.property "version", project.version
     inputs.property "minecraft_version", project.minecraft_version
     inputs.property "loader_version", project.loader_version
+    inputs.property "roselib_version", project.roselib_version
     filteringCharset "UTF-8"
 
     filesMatching("fabric.mod.json") {
         expand "version": project.version,
                 "minecraft_version": project.minecraft_version,
-                "loader_version": project.loader_version
+                "loader_version": project.loader_version,
+                "roselib_version": project.roselib_version
     }
 }
 
-def targetJavaVersion = 17
+def targetJavaVersion = 25
 tasks.withType(JavaCompile).configureEach {
     // ensure that the encoding is set to UTF-8, no matter what the system default is
     // this fixes some edge cases with special characters not displaying correctly

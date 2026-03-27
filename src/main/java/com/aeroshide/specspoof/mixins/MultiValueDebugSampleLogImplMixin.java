@@ -8,32 +8,32 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import com.aeroshide.specspoof.FakeFPSManager;
-import net.minecraft.util.profiler.MultiValueDebugSampleLogImpl;
+import net.minecraft.util.debugchart.LocalSampleLogger;
 
-@Mixin(MultiValueDebugSampleLogImpl.class)
+@Mixin(LocalSampleLogger.class)
 public abstract class MultiValueDebugSampleLogImplMixin {
     @Final
-    @Shadow private long[][] multiValues;
+    @Shadow private long[][] samples;
     @Shadow private int start;
-    @Shadow private int length;
-    @Shadow protected abstract int wrap(int index);
+    @Shadow private int size;
+    @Shadow protected abstract int wrapIndex(int index);
 
-    @Inject(method = "onPush", at = @At("TAIL"))
+    @Inject(method = "useSample", at = @At("TAIL"))
     private void afterOnPush(CallbackInfo ci) {
         try {
             // Only operate on the registered HUD instance
-            if (!FakeFPSManager.isRegisteredFrameLog((MultiValueDebugSampleLogImpl) (Object) this)) {
+            if (!FakeFPSManager.isRegisteredFrameLog((LocalSampleLogger) (Object) this)) {
                 return;
             }
-            if (this.length <= 0) return;
+            if (this.size <= 0) return;
 
-            int insertedIndex = this.wrap(this.start + this.length - 1);
-            long originalNs = this.multiValues[insertedIndex][0];
+            int insertedIndex = this.wrapIndex(this.start + this.size - 1);
+            long originalNs = this.samples[insertedIndex][0];
 
             double spoofedMs = FakeFPSManager.getMillisecondsPerFrame((double) originalNs);
             long spoofedNs = Math.max(0L, (long) (spoofedMs * 1_000_000.0));
 
-            this.multiValues[insertedIndex][0] = spoofedNs;
+            this.samples[insertedIndex][0] = spoofedNs;
         } catch (Throwable t) {
             t.printStackTrace();
         }

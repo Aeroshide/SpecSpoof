@@ -1,4 +1,4 @@
-
+/*
 package com.aeroshide.specspoof.mixins.compat.vulkanmod;
 
 import com.aeroshide.specspoof.SpecSpoofClient;
@@ -30,3 +30,5 @@ public class SystemInfoMixin {
         cpuInfo = DataHolder.getDaCPUName();
     }
 }
+
+ */

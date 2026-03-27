@@ -1,21 +1,19 @@
 package com.aeroshide.specspoof.config.gui;
 
+import com.aeroshide.rose_bush.gui.IntFieldWidget;
 import com.aeroshide.specspoof.SpecSpoofClient;
 import com.aeroshide.specspoof.config.DataHolder;
-import com.aeroshide.specspoof.config.IntFieldWidget;
 import com.mojang.blaze3d.opengl.GlStateManager;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.widget.ButtonWidget;
-import net.minecraft.client.gui.widget.SliderWidget;
-import net.minecraft.client.gui.widget.TextFieldWidget;
-import net.minecraft.text.Text;
-//import net.vulkanmod.vulkan.device.DeviceManager;
-import oshi.SystemInfo;
-import oshi.hardware.CentralProcessor;
 
-import javax.xml.crypto.Data;
-import java.util.Locale;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.components.AbstractSliderButton;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.EditBox;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.network.chat.Component;
+import org.jspecify.annotations.NonNull;
+
+import java.io.IOException;
 
 import static com.aeroshide.specspoof.config.DataHolder.*;
 
@@ -24,70 +22,68 @@ public class OptionsGUI extends Screen {
     private final Screen parent;
     private int pageContext = 0;
     private final int buttonCount = 0;
-    private static final Text CPU_NAME_TEXT = Text.translatable("specspoof.cpu");
-    private static final Text GPU_NAME_TEXT = Text.translatable("specspoof.gpu");
-    private static final Text FPS_NAME_TEXT = Text.translatable("specspoof.fps");
-    private static final Text GPU_DRIVER_NAME_TEXT = Text.translatable("specspoof.gpuDriver");
-    private static final Text GPU_VENDOR_NAME_TEXT = Text.translatable("specspoof.gpuVendor");
-    private static final Text GPU_BACKEND_TEXT = Text.translatable("specspoof.gpuBackend");
-    private TextFieldWidget cpuNameField;
-    private ButtonWidget resetCPUnameField;
-    private TextFieldWidget gpuNameField;
-    private ButtonWidget resetGPUnameField;
+    private static final Component CPU_NAME_TEXT = Component.translatable("specspoof.cpu");
+    private static final Component GPU_NAME_TEXT = Component.translatable("specspoof.gpu");
+    private static final Component FPS_NAME_TEXT = Component.translatable("specspoof.fps");
+    private static final Component GPU_DRIVER_NAME_TEXT = Component.translatable("specspoof.gpuDriver");
+    private static final Component GPU_VENDOR_NAME_TEXT = Component.translatable("specspoof.gpuVendor");
+    private static final Component GPU_BACKEND_TEXT = Component.translatable("specspoof.gpuBackend");
+    private EditBox cpuNameField;
+    private Button resetCPUnameField;
+    private EditBox gpuNameField;
+    private Button resetGPUnameField;
     private IntFieldWidget fpsValueField;
-    private ButtonWidget resetFPSField;
-    private SliderWidget kontol;
-    //private ButtonWidget cfgButton;
+    private Button resetFPSField;
+    private AbstractSliderButton kontol;
 
     // page 2
-    private TextFieldWidget gpuDriverField;
-    private ButtonWidget resetgpuDriverField;
-    private TextFieldWidget gpuVendorField;
-    private ButtonWidget resetgpuVendorField;
-    private TextFieldWidget gpuBackendField;
-    private ButtonWidget resetgpuBackendField;
-    private ButtonWidget nextPageButton;
-    private ButtonWidget prevPageButton;
+    private EditBox gpuDriverField;
+    private Button resetgpuDriverField;
+    private EditBox gpuVendorField;
+    private Button resetgpuVendorField;
+    private EditBox gpuBackendField;
+    private Button resetgpuBackendField;
+    private Button nextPageButton;
+    private Button prevPageButton;
 
     private Number tempDFPST = DataHolder.getDisableFPSThreshold();
-    // current task: trying to have config in-outs from my new UI system :)
 
     public OptionsGUI(Screen parent) {
-        super(Text.translatable("specspoof.configScreen"));
+        super(Component.translatable("specspoof.configScreen"));
         this.parent = parent;
     }
 
     @Override
     public void init() {
 
-        this.cpuNameField = new TextFieldWidget(this.textRenderer, this.width / 2 - 100, 44, 200, 20, Text.translatable("specspoof.cpu"));
+        this.cpuNameField = new EditBox(this.font, this.width / 2 - 100, 44, 200, 20, Component.translatable("specspoof.cpu"));
         this.cpuNameField.setMaxLength(64);
-        this.cpuNameField.setText(DataHolder.getDaCPUName());
+        this.cpuNameField.setValue(DataHolder.getDaCPUName());
 
-        this.resetCPUnameField = this.addDrawableChild(ButtonWidget.builder(Text.literal("R"), (button) -> {
-            cpuNameField.setText(DataHolder.fetchCPUData());
-        }).dimensions(this.cpuNameField.getX() + 205, this.cpuNameField.getY(), 20, 20).build());
+        this.resetCPUnameField = this.addRenderableWidget(Button.builder(Component.literal("R"), (button) -> {
+            cpuNameField.setValue(DataHolder.fetchCPUData());
+        }).bounds(this.cpuNameField.getX() + 205, this.cpuNameField.getY(), 20, 20).build());
 
-        this.gpuNameField = new TextFieldWidget(this.textRenderer, this.width / 2 - 100, 44 + 35, 200, 20, Text.translatable("specspoof.gpu"));
+        this.gpuNameField = new EditBox(this.font, this.width / 2 - 100, 44 + 35, 200, 20, Component.translatable("specspoof.gpu"));
         this.gpuNameField.setMaxLength(64);
-        this.gpuNameField.setText(DataHolder.getDaGPUName());
+        this.gpuNameField.setValue(DataHolder.getDaGPUName());
 
-        this.resetGPUnameField = this.addDrawableChild(ButtonWidget.builder(Text.literal("R"), (button) -> {
-            gpuNameField.setText(/*SpecSpoofClient.isVulkanmodInstalled? DeviceManager.device.deviceName:/*/GlStateManager._getString(GPU_RENDERER));
-        }).dimensions(this.gpuNameField.getX() + 205, this.gpuNameField.getY(), 20, 20).build());
+        this.resetGPUnameField = this.addRenderableWidget(Button.builder(Component.literal("R"), (button) -> {
+            gpuNameField.setValue(GlStateManager._getString(GPU_RENDERER));
+        }).bounds(this.gpuNameField.getX() + 205, this.gpuNameField.getY(), 20, 20).build());
 
 
-        this.fpsValueField = new IntFieldWidget(this.textRenderer, this.width / 2 - 100, 44 + 70, 200, 20, Text.translatable("specspoof.fps"));
+        this.fpsValueField = new IntFieldWidget(this.font, this.width / 2 - 100, 44 + 70, 200, 20, Component.translatable("specspoof.fps"));
         this.fpsValueField.setMaxLength(6);
-        this.fpsValueField.setText(String.valueOf(DataHolder.getDaFPS()));
+        this.fpsValueField.setValue(String.valueOf(DataHolder.getDaFPS()));
 
-        this.resetFPSField = this.addDrawableChild(ButtonWidget.builder(Text.literal("R"), (button) -> {
-            fpsValueField.setText("1000");
-        }).dimensions(this.fpsValueField.getX() + 205, this.fpsValueField.getY(), 20, 20).build());
+        this.resetFPSField = this.addRenderableWidget(Button.builder(Component.literal("R"), (button) -> {
+            fpsValueField.setValue("1000");
+        }).bounds(this.fpsValueField.getX() + 205, this.fpsValueField.getY(), 20, 20).build());
 
-        this.kontol = new SliderWidget(this.width / 2 - 100, 44 + 105, 200, 20, Text.translatable("specspoof.fpsThres", getTextForSlider(DataHolder.getDisableFPSThreshold())), (DataHolder.getDisableFPSThreshold() - 1.0) / (260.0 - 1.0)) {
+        this.kontol = new AbstractSliderButton(this.width / 2 - 100, 44 + 105, 200, 20, Component.translatable("specspoof.fpsThres", getTextForSlider(DataHolder.getDisableFPSThreshold())), (DataHolder.getDisableFPSThreshold() - 1.0) / (260.0 - 1.0)) {
             protected void updateMessage() {
-                setMessage(Text.translatable("specspoof.fpsThres", getTextForSlider((value * (260.0 - 1.0) + 1.0))));
+                setMessage(Component.translatable("specspoof.fpsThres", getTextForSlider((value * (260.0 - 1.0) + 1.0))));
             }
 
             protected void applyValue() {
@@ -102,91 +98,91 @@ public class OptionsGUI extends Screen {
             }
         };
 
-        ButtonWidget discardButton = this.addDrawableChild(ButtonWidget.builder(Text.translatable("specspoof.discard"), (button) -> {
-            client.setScreen(this.parent);
-        }).dimensions(this.width / 2 - 110, this.height / 2 + 90, 100, 20).build());
+        Button discardButton = this.addRenderableWidget(Button.builder(Component.translatable("specspoof.discard"), (button) -> {
+            minecraft.setScreen(this.parent);
+        }).bounds(this.width / 2 - 110, this.height / 2 + 90, 100, 20).build());
 
-        ButtonWidget acceptButton = this.addDrawableChild(ButtonWidget.builder(Text.translatable("specspoof.save"), (button) -> {
-            writeConfig();
+        Button acceptButton = this.addRenderableWidget(Button.builder(Component.translatable("specspoof.save"), (button) -> {
+            try {
+                writeConfig();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
             DataHolder.fetchOptions();
-            client.setScreen(this.parent);
-        }).dimensions(this.width / 2 + 20, this.height / 2 + 90, 100, 20).build());
+            minecraft.setScreen(this.parent);
+        }).bounds(this.width / 2 + 20, this.height / 2 + 90, 100, 20).build());
 
-        this.gpuDriverField = new TextFieldWidget(this.textRenderer, this.width / 2 - 100, 44, 200, 20, Text.translatable("specspoof.gpuDriver"));
+        this.gpuDriverField = new EditBox(this.font, this.width / 2 - 100, 44, 200, 20, Component.translatable("specspoof.gpuDriver"));
         this.gpuDriverField.setMaxLength(64);
-        this.gpuDriverField.setText(DataHolder.getDaGPUDriver());
+        this.gpuDriverField.setValue(DataHolder.getDaGPUDriver());
 
-        this.resetgpuDriverField = this.addDrawableChild(ButtonWidget.builder(Text.literal("R"), (button) -> {
-            gpuDriverField.setText(/*SpecSpoofClient.isVulkanmodInstalled? DeviceManager.device.driverVersion:/*/GlStateManager._getString(GPU_VERSION));
-        }).dimensions(this.gpuDriverField.getX() + 205, this.gpuDriverField.getY(), 20, 20).build());
+        this.resetgpuDriverField = this.addRenderableWidget(Button.builder(Component.literal("R"), (button) -> {
+            gpuDriverField.setValue(GlStateManager._getString(GPU_VERSION));
+        }).bounds(this.gpuDriverField.getX() + 205, this.gpuDriverField.getY(), 20, 20).build());
 
-        this.gpuVendorField = new TextFieldWidget(this.textRenderer, this.width / 2 - 100, 44 + 35, 200, 20, Text.translatable("specspoof.gpuVendor"));
+        this.gpuVendorField = new EditBox(this.font, this.width / 2 - 100, 44 + 35, 200, 20, Component.translatable("specspoof.gpuVendor"));
         this.gpuVendorField.setMaxLength(64);
-        this.gpuVendorField.setText(DataHolder.getDaGPUVendor());
+        this.gpuVendorField.setValue(DataHolder.getDaGPUVendor());
 
-        this.resetgpuVendorField = this.addDrawableChild(ButtonWidget.builder(Text.literal("R"), (button) -> {
-            gpuVendorField.setText(/*SpecSpoofClient.isVulkanmodInstalled? DeviceManager.device.vendorIdString:/*/GlStateManager._getString(GPU_VENDOR));
-        }).dimensions(this.gpuVendorField.getX() + 205, this.gpuVendorField.getY(), 20, 20).build());
+        this.resetgpuVendorField = this.addRenderableWidget(Button.builder(Component.literal("R"), (button) -> {
+            gpuVendorField.setValue(GlStateManager._getString(GPU_VENDOR));
+        }).bounds(this.gpuVendorField.getX() + 205, this.gpuVendorField.getY(), 20, 20).build());
 
-        // New gpuBackendField implementation, similar to the others.
-        // Placing it below gpuVendorField (at y + 70 offset from gpuDriverField)
-        this.gpuBackendField = new TextFieldWidget(this.textRenderer, this.width / 2 - 100, 44 + 70, 200, 20, GPU_BACKEND_TEXT);
+        this.gpuBackendField = new EditBox(this.font, this.width / 2 - 100, 44 + 70, 200, 20, GPU_BACKEND_TEXT);
         this.gpuBackendField.setMaxLength(64);
-        this.gpuBackendField.setText(DataHolder.getDaGPUBackend());
-        this.resetgpuBackendField = this.addDrawableChild(ButtonWidget.builder(Text.literal("R"), (button) -> {
-            gpuBackendField.setText("OpenGL");
-        }).dimensions(this.gpuBackendField.getX() + 205, this.gpuBackendField.getY(), 20, 20).build());
+        this.gpuBackendField.setValue(DataHolder.getDaGPUBackend());
 
-        this.nextPageButton = this.addDrawableChild(ButtonWidget.builder(Text.literal(">"), (button) -> {
+        this.resetgpuBackendField = this.addRenderableWidget(Button.builder(Component.literal("R"), (button) -> {
+            gpuBackendField.setValue("OpenGL");
+        }).bounds(this.gpuBackendField.getX() + 205, this.gpuBackendField.getY(), 20, 20).build());
+
+        this.nextPageButton = this.addRenderableWidget(Button.builder(Component.literal(">"), (button) -> {
             changePage(1);
-        }).dimensions(this.width / 2 + 70, this.height / 2 + 60, 30, 20).build());
+        }).bounds(this.width / 2 + 70, this.height / 2 + 60, 30, 20).build());
 
-        this.prevPageButton = this.addDrawableChild(ButtonWidget.builder(Text.literal("<"), (button) -> {
+        this.prevPageButton = this.addRenderableWidget(Button.builder(Component.literal("<"), (button) -> {
             changePage(-1);
-        }).dimensions(this.width / 2 - 100, this.height / 2 + 60, 30, 20).build());
+        }).bounds(this.width / 2 - 100, this.height / 2 + 60, 30, 20).build());
 
         this.setInitialFocus(this.cpuNameField);
-        this.addSelectableChild(this.cpuNameField);
-        this.addSelectableChild(this.gpuNameField);
-        this.addSelectableChild(this.fpsValueField);
-        this.addSelectableChild(this.kontol);
-        this.addSelectableChild(this.gpuDriverField);
-        this.addSelectableChild(this.gpuVendorField);
-        this.addSelectableChild(this.gpuBackendField);
+
+        // Switched from addWidget to addRenderableWidget
+        this.addRenderableWidget(this.cpuNameField);
+        this.addRenderableWidget(this.gpuNameField);
+        this.addRenderableWidget(this.fpsValueField);
+        this.addRenderableWidget(this.kontol);
+        this.addRenderableWidget(this.gpuDriverField);
+        this.addRenderableWidget(this.gpuVendorField);
+        this.addRenderableWidget(this.gpuBackendField);
+
         renderPage();
     }
 
     @Override
-    public void render(final DrawContext context, final int mouseX, final int mouseY, final float delta) {
-        super.render(context, mouseX, mouseY, delta);
-        context.drawCenteredTextWithShadow(this.textRenderer, this.title, this.width / 2, 20, 16777215);
-        if (pageContext == 0) {
-            context.drawTextWithShadow(this.textRenderer, CPU_NAME_TEXT, this.width / 2 - 100, this.cpuNameField.getY() - 10, 10526880);
-            context.drawTextWithShadow(this.textRenderer, GPU_NAME_TEXT, this.width / 2 - 100, this.gpuNameField.getY() - 10, 10526880);
-            context.drawTextWithShadow(this.textRenderer, FPS_NAME_TEXT, this.width / 2 - 100, this.fpsValueField.getY() - 10, 10526880);
-        } else if (pageContext == 1) {
-            context.drawTextWithShadow(this.textRenderer, GPU_VENDOR_NAME_TEXT, this.width / 2 - 100, this.gpuVendorField.getY() - 10, 10526880);
-            context.drawTextWithShadow(this.textRenderer, GPU_DRIVER_NAME_TEXT, this.width / 2 - 100, this.gpuDriverField.getY() - 10, 10526880);
-            context.drawTextWithShadow(this.textRenderer, GPU_BACKEND_TEXT, this.width / 2 - 100, this.gpuBackendField.getY() - 10, 10526880);
-        }
+    public void extractRenderState(final @NonNull GuiGraphicsExtractor graphics, final int mouseX, final int mouseY, final float delta) {
+        super.extractRenderState(graphics, mouseX, mouseY, delta); // Automatically renders all addRenderableWidget items
 
-        this.cpuNameField.render(context, mouseX, mouseY, delta);
-        this.gpuNameField.render(context, mouseX, mouseY, delta);
-        this.fpsValueField.render(context, mouseX, mouseY, delta);
-        this.kontol.render(context, mouseX, mouseY, delta);
-        this.gpuDriverField.render(context, mouseX, mouseY, delta);
-        this.gpuVendorField.render(context, mouseX, mouseY, delta);
-        this.gpuBackendField.render(context, mouseX, mouseY, delta);
+        graphics.centeredText(this.font, this.title, this.width / 2, 20, 0xFFFFFFFF);
+
+        if (pageContext == 0) {
+            graphics.text(this.font, CPU_NAME_TEXT, this.width / 2 - 100, this.cpuNameField.getY() - 10, 0xFFA0A0A0);
+            graphics.text(this.font, GPU_NAME_TEXT, this.width / 2 - 100, this.gpuNameField.getY() - 10, 0xFFA0A0A0);
+            graphics.text(this.font, FPS_NAME_TEXT, this.width / 2 - 100, this.fpsValueField.getY() - 10, 0xFFA0A0A0);
+        } else if (pageContext == 1) {
+            graphics.text(this.font, GPU_VENDOR_NAME_TEXT, this.width / 2 - 100, this.gpuVendorField.getY() - 10, 0xFFA0A0A0);
+            graphics.text(this.font, GPU_DRIVER_NAME_TEXT, this.width / 2 - 100, this.gpuDriverField.getY() - 10, 0xFFA0A0A0);
+            graphics.text(this.font, GPU_BACKEND_TEXT, this.width / 2 - 100, this.gpuBackendField.getY() - 10, 0xFFA0A0A0);
+        }
     }
 
-    private void writeConfig() {
-        SpecSpoofClient.config.setOption("CPU", this.cpuNameField.getText());
-        SpecSpoofClient.config.setOption("GPU", this.gpuNameField.getText());
-        SpecSpoofClient.config.setOption("FakeFPS", Integer.parseInt(this.fpsValueField.getText()));
+    private void writeConfig() throws IOException {
+        SpecSpoofClient.config.setOption("CPU", this.cpuNameField.getValue());
+        SpecSpoofClient.config.setOption("GPU", this.gpuNameField.getValue());
+        SpecSpoofClient.config.setOption("FakeFPS", Integer.parseInt(this.fpsValueField.getValue()));
         SpecSpoofClient.config.setOption("DisableFakeFPSThreshold", tempDFPST);
-        SpecSpoofClient.config.setOption("GPUDriverVersion", this.gpuDriverField.getText());
-        SpecSpoofClient.config.setOption("GPUVendor", this.gpuVendorField.getText());
-        SpecSpoofClient.config.setOption("GPUBackend", this.gpuBackendField.getText());
+        SpecSpoofClient.config.setOption("GPUDriverVersion", this.gpuDriverField.getValue());
+        SpecSpoofClient.config.setOption("GPUVendor", this.gpuVendorField.getValue());
+        SpecSpoofClient.config.setOption("GPUBackend", this.gpuBackendField.getValue());
     }
 
     private void changePage(int a) {
@@ -195,7 +191,6 @@ public class OptionsGUI extends Screen {
         renderPage();
     }
 
-    // this is so shit
     private void renderPage() {
         if (pageContext == 0) {
             this.cpuNameField.visible = true;
@@ -232,12 +227,12 @@ public class OptionsGUI extends Screen {
         }
     }
 
-    private Text getTextForSlider(double a) {
+    private Component getTextForSlider(double a) {
         if (a <= 1) {
-            return Text.translatable("specspoof.fraud");
+            return Component.translatable("specspoof.fraud");
         } else if (a >= 260) {
-            return Text.translatable("specspoof.honest");
+            return Component.translatable("specspoof.honest");
         }
-        return Text.literal((int) a + " FPS");
+        return Component.literal((int) a + " FPS");
     }
 }

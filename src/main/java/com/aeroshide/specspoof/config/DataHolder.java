@@ -9,6 +9,7 @@ import net.fabricmc.loader.api.FabricLoader;
 import oshi.SystemInfo;
 import oshi.hardware.CentralProcessor;
 
+import java.io.IOException;
 import java.util.Locale;
 import java.util.function.Supplier;
 
@@ -133,7 +134,7 @@ public class DataHolder {
 
 
     }
-    private static <T> void setOptionIfAbsent(String optionKey, Supplier<T> valueSupplier) {
+    private static <T> void setOptionIfAbsent(String optionKey, Supplier<T> valueSupplier) throws IOException {
         if (config.getOption(optionKey) == null) {
             config.setOption(optionKey, valueSupplier.get());
         }

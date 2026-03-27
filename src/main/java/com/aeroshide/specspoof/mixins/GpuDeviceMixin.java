@@ -7,31 +7,34 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-@Mixin(value = net.minecraft.client.gl.GlBackend.class)
-public class GlBackend {
-
+@Mixin(value = com.mojang.blaze3d.systems.GpuDevice.class)
+public class GpuDeviceMixin {
 
     @Inject(method = "getRenderer", at = @At("RETURN"), cancellable = true)
-    private void modifyGPUGL(CallbackInfoReturnable<String> cir) {
-        if (!SpecSpoofClient.isVulkanmodInstalled)
+    private void modifyRenderer(CallbackInfoReturnable<String> cir) {
+        if (!SpecSpoofClient.isVulkanmodInstalled) {
             cir.setReturnValue(DataHolder.getDaGPUName());
+        }
     }
 
     @Inject(method = "getVersion", at = @At("RETURN"), cancellable = true)
-    private void modifyDriverGL(CallbackInfoReturnable<String> cir) {
-        if (!SpecSpoofClient.isVulkanmodInstalled)
+    private void modifyDriver(CallbackInfoReturnable<String> cir) {
+        if (!SpecSpoofClient.isVulkanmodInstalled) {
             cir.setReturnValue(DataHolder.getDaGPUDriver());
+        }
     }
 
     @Inject(method = "getBackendName", at = @At("RETURN"), cancellable = true)
-    private void modifyBackendGL(CallbackInfoReturnable<String> cir) {
-        if (!SpecSpoofClient.isVulkanmodInstalled)
+    private void modifyBackend(CallbackInfoReturnable<String> cir) {
+        if (!SpecSpoofClient.isVulkanmodInstalled) {
             cir.setReturnValue(DataHolder.getDaGPUBackend());
+        }
     }
 
     @Inject(method = "getVendor", at = @At("RETURN"), cancellable = true)
-    private void modifyVendorGL(CallbackInfoReturnable<String> cir) {
-        if (!SpecSpoofClient.isVulkanmodInstalled)
+    private void modifyVendor(CallbackInfoReturnable<String> cir) {
+        if (!SpecSpoofClient.isVulkanmodInstalled) {
             cir.setReturnValue(DataHolder.getDaGPUVendor());
+        }
     }
 }

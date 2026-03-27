@@ -5,8 +5,8 @@
   "compatibilityLevel": "JAVA_8",
   "client": [
     "DebugHudMixin",
-    "GlBackend",
     "GLXMixin",
+    "GpuDeviceMixin",
     "MinecraftClientMixin",
     "MultiValueDebugSampleLogImplMixin"
   ],
@@ -14,8 +14,6 @@
     "defaultRequire": 1
   },
   "mixins": [
-    "compat.sodiumextra.FrameCounterMixin",
-    "compat.vulkanmod.SystemInfoMixin",
-    "compat.vulkanmod.VulkanMixin"
+    "compat.sodiumextra.FrameCounterMixin"
   ]
 }

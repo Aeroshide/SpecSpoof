@@ -5,13 +5,13 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import net.minecraft.client.gui.hud.DebugHud;
-import net.minecraft.util.profiler.MultiValueDebugSampleLogImpl;
 import com.aeroshide.specspoof.FakeFPSManager;
 
 import java.lang.reflect.Field;
+import net.minecraft.client.gui.components.DebugScreenOverlay;
+import net.minecraft.util.debugchart.LocalSampleLogger;
 
-@Mixin(DebugHud.class)
+@Mixin(DebugScreenOverlay.class)
 public class DebugHudMixin {
     @Inject(method = "<init>", at = @At("TAIL"))
     private void onCtor(CallbackInfo ci) {
@@ -26,8 +26,8 @@ public class DebugHudMixin {
                     try {
                         f.setAccessible(true);
                         Object val = f.get(self);
-                        if (val instanceof MultiValueDebugSampleLogImpl) {
-                            MultiValueDebugSampleLogImpl inst = (MultiValueDebugSampleLogImpl) val;
+                        if (val instanceof LocalSampleLogger) {
+                            LocalSampleLogger inst = (LocalSampleLogger) val;
                             FakeFPSManager.registerFrameLog(inst);
                             SpecSpoofClient.LOG.info("[SpecSpoof] Registered frame log via scanning field '" + f.getName() + "' -> " + inst);
                             return;
@@ -42,8 +42,8 @@ public class DebugHudMixin {
             for (Field f : publicFields) {
                 try {
                     Object val = f.get(self);
-                    if (val instanceof MultiValueDebugSampleLogImpl) {
-                        MultiValueDebugSampleLogImpl inst = (MultiValueDebugSampleLogImpl) val;
+                    if (val instanceof LocalSampleLogger) {
+                        LocalSampleLogger inst = (LocalSampleLogger) val;
                         FakeFPSManager.registerFrameLog(inst);
                         SpecSpoofClient.LOG.info("[SpecSpoof] Registered frame log via public field '" + f.getName() + "' -> " + inst);
                         return;

@@ -27,8 +27,8 @@
     "specspoof.mixins.json"
   ],
   "depends": {
-    "fabricloader": ">=0.12.10",
-    "minecraft": ">=1.21.10",
-    "rose_bush": ">=1.2"
+    "fabricloader": ">=${loader_version}",
+    "minecraft": ">=${minecraft_version}",
+    "rose_bush": ">=${roselib_version}"
   }
 }

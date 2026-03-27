@@ -8,13 +8,25 @@ import net.fabricmc.loader.api.FabricLoader;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.io.IOException;
+import java.nio.file.Path;
+
 public class SpecSpoofClient implements ClientModInitializer {
     /**
      * Runs the mod initializer on the client environment.
      */
 
     public static final Logger LOG = LogManager.getLogger("SpecSpoof");
-    public static Config config = new Config("config/SpecSpoof.json");
+    public static Config config;
+
+    static {
+        try {
+            config = new Config(Path.of("config/SpecSpoof.json"));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public static boolean isVulkanmodInstalled = FabricLoader.getInstance().isModLoaded("vulkanmod");
     public static FieldModifierService Roselib_FieldModifier = new FieldModifier();
 

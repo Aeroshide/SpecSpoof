@@ -3,8 +3,6 @@ package com.aeroshide.specspoof.mixins;
 import com.aeroshide.specspoof.FakeFPSManager;
 import com.aeroshide.specspoof.SpecSpoofClient;
 import com.aeroshide.specspoof.config.DataHolder;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.hud.DebugHud;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -13,20 +11,16 @@ import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.util.concurrent.CompletableFuture;
+import net.minecraft.client.Minecraft;
 
-@Mixin(MinecraftClient.class)
+@Mixin(Minecraft.class)
 public class MinecraftClientMixin {
-    @Shadow
-    private int fpsCounter;
 
 
-
-
-
-    @ModifyVariable(at = @At(value = "FIELD", target = "Lnet/minecraft/client/MinecraftClient;fpsCounter:I"), method = "render(Z)V", index = 1, argsOnly = true)
-    private boolean addFakeFPS(boolean value) {
-        int actual = this.fpsCounter;
-        this.fpsCounter = FakeFPSManager.computeFakeIntFps(actual);
-        return true;
+    @Inject(method = "getFps", at = @At("RETURN"), cancellable = true, remap = false)
+    private static void modifyFPS(CallbackInfoReturnable<Integer> cir) {
+        int actual = cir.getReturnValue();
+        int fakeFps = FakeFPSManager.getOrComputeFakeFps(actual);
+        cir.setReturnValue(fakeFps);
     }
 }
