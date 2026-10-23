@@ -2,10 +2,8 @@ package com.aeroshide.specspoof.config;
 
 import com.aeroshide.specspoof.FakeFPSManager;
 import com.aeroshide.specspoof.SpecSpoofClient;
-import com.mojang.blaze3d.opengl.GlStateManager;
-import net.fabricmc.loader.api.FabricLoader;
-// import net.vulkanmod.vulkan.Vulkan;
-// simport net.vulkanmod.vulkan.device.DeviceManager;
+import com.mojang.renderpearl.api.device.DeviceInfo;
+import com.mojang.renderpearl.backend.opengl.GlStateManager;
 import oshi.SystemInfo;
 import oshi.hardware.CentralProcessor;
 
@@ -14,7 +12,6 @@ import java.util.Locale;
 import java.util.function.Supplier;
 
 import static com.aeroshide.specspoof.SpecSpoofClient.config;
-//import static com.aeroshide.specspoof.SpecSpoofClient.isVulkanmodInstalled;
 
 public class DataHolder {
     private static String daCPUName;
@@ -25,9 +22,57 @@ public class DataHolder {
     private static int daFPS;
     private static int disableFPSThreshold;
 
+    private static volatile DeviceInfo hardwareDeviceInfo;
+
     public static final int GPU_RENDERER = 7937;
     public static final int GPU_VENDOR = 7936;
     public static final int GPU_VERSION = 7938;
+
+    public static void setHardwareDeviceInfo(DeviceInfo info) {
+        if (hardwareDeviceInfo == null && info != null) {
+            hardwareDeviceInfo = info;
+        }
+    }
+
+    public static String getRealGPUName() {
+        if (hardwareDeviceInfo != null) {
+            return hardwareDeviceInfo.name();
+        }
+        try {
+            return GlStateManager._getString(GPU_RENDERER);
+        } catch (Throwable t) {
+            return "Unknown GPU";
+        }
+    }
+
+    public static String getRealGPUVendor() {
+        if (hardwareDeviceInfo != null) {
+            return hardwareDeviceInfo.vendorName();
+        }
+        try {
+            return GlStateManager._getString(GPU_VENDOR);
+        } catch (Throwable t) {
+            return "Unknown Vendor";
+        }
+    }
+
+    public static String getRealGPUDriver() {
+        if (hardwareDeviceInfo != null) {
+            return hardwareDeviceInfo.driverInfo();
+        }
+        try {
+            return GlStateManager._getString(GPU_VERSION);
+        } catch (Throwable t) {
+            return "Unknown Driver";
+        }
+    }
+
+    public static String getRealGPUBackend() {
+        if (hardwareDeviceInfo != null) {
+            return hardwareDeviceInfo.backendName();
+        }
+        return "OpenGL";
+    }
 
     public static String getDaCPUName() {
         if (daCPUName == null) {
@@ -84,12 +129,11 @@ public class DataHolder {
                 throw new IllegalStateException("Config is not initialized");
             }
 
-            // Ensure each key has a default value if missing.
             setOptionIfAbsent("CPU", DataHolder::fetchCPUData);
-            setOptionIfAbsent("GPU", () -> GlStateManager._getString(GPU_RENDERER));
-            setOptionIfAbsent("GPUVendor", () -> GlStateManager._getString(GPU_VENDOR));
-            setOptionIfAbsent("GPUDriverVersion", () -> GlStateManager._getString(GPU_VERSION));
-            setOptionIfAbsent("GPUBackend", () -> "OpenGL"); // default for GPUBackend
+            setOptionIfAbsent("GPU", DataHolder::getRealGPUName);
+            setOptionIfAbsent("GPUVendor", DataHolder::getRealGPUVendor);
+            setOptionIfAbsent("GPUDriverVersion", DataHolder::getRealGPUDriver);
+            setOptionIfAbsent("GPUBackend", DataHolder::getRealGPUBackend);
             setOptionIfAbsent("FakeFPS", () -> 1000);
             setOptionIfAbsent("DisableFakeFPSThreshold", () -> 100);
 
@@ -114,26 +158,16 @@ public class DataHolder {
         }
     }
 
-
-
-    public static String fetchCPUData()
-    {
-        try
-        {
+    public static String fetchCPUData() {
+        try {
             CentralProcessor centralProcessor = (new SystemInfo()).getHardware().getProcessor();
-            if (/*isVulkanmodInstalled/*/ false)
-            {
-                return String.format("%s", centralProcessor.getProcessorIdentifier().getName()).replaceAll("\\s+", " ");
-            }
             return String.format(Locale.ROOT, "%dx %s", centralProcessor.getLogicalProcessorCount(), centralProcessor.getProcessorIdentifier().getName()).replaceAll("\\s+", " ");
-        } catch (NoClassDefFoundError e)
-        {
+        } catch (NoClassDefFoundError e) {
             SpecSpoofClient.LOG.error("Unable to fetch hardware information, init will be inaccurate!");
             return "1x unknown";
         }
-
-
     }
+
     private static <T> void setOptionIfAbsent(String optionKey, Supplier<T> valueSupplier) throws IOException {
         if (config.getOption(optionKey) == null) {
             config.setOption(optionKey, valueSupplier.get());

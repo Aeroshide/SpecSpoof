@@ -3,7 +3,7 @@ package com.aeroshide.specspoof.config.gui;
 import com.aeroshide.rose_bush.gui.IntFieldWidget;
 import com.aeroshide.specspoof.SpecSpoofClient;
 import com.aeroshide.specspoof.config.DataHolder;
-import com.mojang.blaze3d.opengl.GlStateManager;
+import com.mojang.renderpearl.backend.opengl.GlStateManager;
 
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractSliderButton;
@@ -69,7 +69,7 @@ public class OptionsGUI extends Screen {
         this.gpuNameField.setValue(DataHolder.getDaGPUName());
 
         this.resetGPUnameField = this.addRenderableWidget(Button.builder(Component.literal("R"), (button) -> {
-            gpuNameField.setValue(GlStateManager._getString(GPU_RENDERER));
+            gpuNameField.setValue(DataHolder.getRealGPUName());
         }).bounds(this.gpuNameField.getX() + 205, this.gpuNameField.getY(), 20, 20).build());
 
 
@@ -99,7 +99,7 @@ public class OptionsGUI extends Screen {
         };
 
         Button discardButton = this.addRenderableWidget(Button.builder(Component.translatable("specspoof.discard"), (button) -> {
-            minecraft.setScreen(this.parent);
+            minecraft.gui.setScreen(this.parent);
         }).bounds(this.width / 2 - 110, this.height / 2 + 90, 100, 20).build());
 
         Button acceptButton = this.addRenderableWidget(Button.builder(Component.translatable("specspoof.save"), (button) -> {
@@ -109,7 +109,7 @@ public class OptionsGUI extends Screen {
                 throw new RuntimeException(e);
             }
             DataHolder.fetchOptions();
-            minecraft.setScreen(this.parent);
+            minecraft.gui.setScreen(this.parent);
         }).bounds(this.width / 2 + 20, this.height / 2 + 90, 100, 20).build());
 
         this.gpuDriverField = new EditBox(this.font, this.width / 2 - 100, 44, 200, 20, Component.translatable("specspoof.gpuDriver"));
@@ -117,7 +117,7 @@ public class OptionsGUI extends Screen {
         this.gpuDriverField.setValue(DataHolder.getDaGPUDriver());
 
         this.resetgpuDriverField = this.addRenderableWidget(Button.builder(Component.literal("R"), (button) -> {
-            gpuDriverField.setValue(GlStateManager._getString(GPU_VERSION));
+            gpuDriverField.setValue(DataHolder.getRealGPUDriver());
         }).bounds(this.gpuDriverField.getX() + 205, this.gpuDriverField.getY(), 20, 20).build());
 
         this.gpuVendorField = new EditBox(this.font, this.width / 2 - 100, 44 + 35, 200, 20, Component.translatable("specspoof.gpuVendor"));
@@ -125,7 +125,7 @@ public class OptionsGUI extends Screen {
         this.gpuVendorField.setValue(DataHolder.getDaGPUVendor());
 
         this.resetgpuVendorField = this.addRenderableWidget(Button.builder(Component.literal("R"), (button) -> {
-            gpuVendorField.setValue(GlStateManager._getString(GPU_VENDOR));
+            gpuVendorField.setValue(DataHolder.getRealGPUVendor());
         }).bounds(this.gpuVendorField.getX() + 205, this.gpuVendorField.getY(), 20, 20).build());
 
         this.gpuBackendField = new EditBox(this.font, this.width / 2 - 100, 44 + 70, 200, 20, GPU_BACKEND_TEXT);
@@ -133,7 +133,7 @@ public class OptionsGUI extends Screen {
         this.gpuBackendField.setValue(DataHolder.getDaGPUBackend());
 
         this.resetgpuBackendField = this.addRenderableWidget(Button.builder(Component.literal("R"), (button) -> {
-            gpuBackendField.setValue("OpenGL");
+            gpuBackendField.setValue(DataHolder.getRealGPUBackend());
         }).bounds(this.gpuBackendField.getX() + 205, this.gpuBackendField.getY(), 20, 20).build());
 
         this.nextPageButton = this.addRenderableWidget(Button.builder(Component.literal(">"), (button) -> {
@@ -146,7 +146,6 @@ public class OptionsGUI extends Screen {
 
         this.setInitialFocus(this.cpuNameField);
 
-        // Switched from addWidget to addRenderableWidget
         this.addRenderableWidget(this.cpuNameField);
         this.addRenderableWidget(this.gpuNameField);
         this.addRenderableWidget(this.fpsValueField);
@@ -160,7 +159,7 @@ public class OptionsGUI extends Screen {
 
     @Override
     public void extractRenderState(final @NonNull GuiGraphicsExtractor graphics, final int mouseX, final int mouseY, final float delta) {
-        super.extractRenderState(graphics, mouseX, mouseY, delta); // Automatically renders all addRenderableWidget items
+        super.extractRenderState(graphics, mouseX, mouseY, delta);
 
         graphics.centeredText(this.font, this.title, this.width / 2, 20, 0xFFFFFFFF);
 
@@ -186,7 +185,6 @@ public class OptionsGUI extends Screen {
     }
 
     private void changePage(int a) {
-        // 1 forward, -1 backward
         pageContext += a;
         renderPage();
     }

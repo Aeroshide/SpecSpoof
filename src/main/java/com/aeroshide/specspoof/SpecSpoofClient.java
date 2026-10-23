@@ -26,8 +26,6 @@ public class SpecSpoofClient implements ClientModInitializer {
             throw new RuntimeException(e);
         }
     }
-
-    public static boolean isVulkanmodInstalled = FabricLoader.getInstance().isModLoaded("vulkanmod");
     public static FieldModifierService Roselib_FieldModifier = new FieldModifier();
 
 
